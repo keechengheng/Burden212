@@ -1,4 +1,5 @@
 <?php
+session_start();
 
 // this will autoload the class that we need in our code
 spl_autoload_register(function($class) {
@@ -10,6 +11,6 @@ spl_autoload_register(function($class) {
   
 });
 
-session_start();
+
 
 ?>

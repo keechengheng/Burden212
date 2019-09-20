@@ -9,8 +9,10 @@ if ( isset($_GET['error']) ) {
 } elseif ( isset($_POST['userid']) && isset($_POST['password']) ) {
     $username = $_POST['userid'];
     $password = $_POST['password'];
-
+    
     $dao = new StudentDAO();
+
+
     $user = $dao->retrieve($username);
 
     if ( $user != null && $user->authenticate($password) ) {
@@ -24,15 +26,18 @@ if ( isset($_GET['error']) ) {
 
 
 }
+
 ?>
 
 <html>
-    <head>
+    <!-- <head>
         <link rel="stylesheet" type="text/css" href="include/style.css">
-    </head>
+    </head> -->
     <body>
-        <h1>Login</h1>
-        <form method='POST' action='login.php'>
+        <h1>SMU Boss Bidding System :></h1>
+        <h2>Login</h2>
+
+        <form method='POST' action='Login.php'>
             <table>
                 <tr>
                     <td>UserID</td>
@@ -56,6 +61,7 @@ if ( isset($_GET['error']) ) {
 
         <p>
             <?=$error?>
+
         </p>
         
     </body>

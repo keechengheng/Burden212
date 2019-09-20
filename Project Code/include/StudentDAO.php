@@ -1,27 +1,26 @@
 <?php
 
-class UserDAO {
+class StudentDAO {
     
     public  function retrieve($username) {
-        $sql = 'select username, password, name, school, edollar from student where username=:username';
+        $sql = 'select userid, password, name, school, edollar from student where userid=:userid';
         
         $connMgr = new ConnectionManager();
         $conn = $connMgr->getConnection();
         
-            
         $stmt = $conn->prepare($sql);
         $stmt->setFetchMode(PDO::FETCH_ASSOC);
-        $stmt->bindParam(':username', $username, PDO::PARAM_STR);
+        $stmt->bindParam(':userid', $username, PDO::PARAM_STR);
         $stmt->execute();
 
 
         while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            return new User($row['username'], $row['password'], $row['name'], $row['school'], $row['edollar']);
+            return new Student($row['userid'], $row['password'], $row['name'], $row['school'], $row['edollar']);
         }
     }
 
     public  function retrieveAll() {
-        $sql = 'select * from user';
+        $sql = 'select * from student';
         
         $connMgr = new ConnectionManager();      
         $conn = $connMgr->getConnection();
@@ -63,7 +62,7 @@ class UserDAO {
     }
 
      public function update($user) {
-        $sql = 'UPDATE user SET edollar=:edollar, school=:school, password=:password, name=:name WHERE username=:username';      
+        $sql = 'UPDATE student SET edollar=:edollar, school=:school, password=:password, name=:name WHERE username=:username';      
         
         $connMgr = new ConnectionManager();           
         $conn = $connMgr->getConnection();
@@ -86,7 +85,7 @@ class UserDAO {
     }
 	
 	 public function removeAll() {
-        $sql = 'TRUNCATE TABLE user';
+        $sql = 'TRUNCATE TABLE student';
         
         $connMgr = new ConnectionManager();
         $conn = $connMgr->getConnection();

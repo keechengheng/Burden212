@@ -8,7 +8,7 @@ class ConnectionManager {
         $host = "localhost";
         $username = "root";
         $password = "root";  
-        $dbname = "SPM_Project_2019";
+        $dbname = "SPM_Proj_2019";
         $port = 3306;    
 
         $url  = "mysql:host={$host};dbname={$dbname};port={$port}";
