@@ -13,6 +13,7 @@ else{
 }
 
 var_dump($user);
+var_dump($user->password);
 
 #Non-admin
 
@@ -27,6 +28,8 @@ var_dump($user);
     <h3>You have <?= $user->edollar ?> credits left. What would you like to do? </h3>    
 
     <h1>
+        <a href='BidMod.php'>Bid for Mods!</a>
+        <br><br>
         <a href='Logout.php'>Log Out</a>
     </h1>
 
