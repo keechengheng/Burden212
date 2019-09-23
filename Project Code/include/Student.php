@@ -17,8 +17,7 @@ class Student {
     }
     
     public function authenticate($enteredPwd) {
-        return TRUE;
-        password_verify ($enteredPwd, $this->password);
+        return password_verify ($enteredPwd, $this->password);
     }
 }
 
