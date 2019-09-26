@@ -39,7 +39,7 @@ class StudentDAO {
     }
 
     public function add($user) {
-        $sql = "INSERT IGNORE INTO student (username, password, name, school, edollar) VALUES (:username, :password, :name, :school, :edollar)";
+        $sql = "INSERT IGNORE INTO student (userid, password, name, school, edollar) VALUES (:userid, :password, :name, :school, :edollar)";
 
         $connMgr = new ConnectionManager();      
         $conn = $connMgr->getConnection();
@@ -47,7 +47,7 @@ class StudentDAO {
         
         $user->password = password_hash($user->password,PASSWORD_DEFAULT);
 
-        $stmt->bindParam(':username', $user->username, PDO::PARAM_STR);
+        $stmt->bindParam(':userid', $user->userid, PDO::PARAM_STR);
         $stmt->bindParam(':password', $user->password, PDO::PARAM_STR);
         $stmt->bindParam(':name', $user->name, PDO::PARAM_STR);
         $stmt->bindParam(':school', $user->school, PDO::PARAM_STR);
@@ -85,7 +85,10 @@ class StudentDAO {
     }
 	
 	 public function removeAll() {
-        $sql = 'TRUNCATE TABLE student';
+        $sql = '
+            SET FOREIGN_KEY_CHECKS = 0;      
+            TRUNCATE TABLE student
+            SET FOREIGN_KEY_CHECKS = 1;';
         
         $connMgr = new ConnectionManager();
         $conn = $connMgr->getConnection();

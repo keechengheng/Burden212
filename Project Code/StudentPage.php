@@ -3,22 +3,14 @@
 require_once 'include/common.php';
 
 
-if(isset($_SESSION['userid'])){
+if(isset($_SESSION['userid']) && $_SESSION['userid'] != 'Admin'){
     $dao = new StudentDAO();
     $user = $dao->retrieve($_SESSION['userid']);
 }
 else{
-    header("Location: Login.php?error=Missing login session");
+    header("Location: Login.php?error=Unauthorized Access");
     return;
 }
-
-var_dump($user);
-var_dump($user->password);
-
-#Non-admin
-
-
-#Admin
 
 
 ?>

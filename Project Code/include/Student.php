@@ -19,6 +19,10 @@ class Student {
     public function authenticate($enteredPwd) {
         return password_verify ($enteredPwd, $this->password);
     }
+
+    public function adminLogin($enteredPwd) {
+        return $enteredPwd === 'password';
+    }
 }
 
 ?>

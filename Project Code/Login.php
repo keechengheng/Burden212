@@ -13,16 +13,32 @@ if ( isset($_GET['error']) ) {
     $dao = new StudentDAO();
 
 
-    $user = $dao->retrieve($username);
+    if($username !== 'Admin'){
+        $user = $dao->retrieve($username);
 
-    if ( $user != null && $user->authenticate($password) ) {
-        $_SESSION['userid'] = $username; 
-        header("Location: HomePage.php");
-        return;
-
-    } else {
-        $error = 'Incorrect UserID or Password!';
+        if ( $user != null && $user->authenticate($password) ) {
+            $_SESSION['userid'] = $username; 
+            header("Location: StudentPage.php");
+            return;
+    
+        } else {
+            $error = 'Incorrect UserID or Password!';
+        }
     }
+    else{
+
+        $user = new Student();
+        if ( $user->adminLogin($password) ) {
+            $_SESSION['userid'] = $username; 
+            header("Location: AdminPage.php");
+            return;
+
+        } else {
+            $error = 'Incorrect UserID or Password!';
+        }
+
+    }
+
 
 
 }
@@ -30,9 +46,6 @@ if ( isset($_GET['error']) ) {
 ?>
 
 <html>
-    <!-- <head>
-        <link rel="stylesheet" type="text/css" href="include/style.css">
-    </head> -->
     <body>
         <h1>SMU Boss Bidding System :></h1>
         <h2>Login</h2>
