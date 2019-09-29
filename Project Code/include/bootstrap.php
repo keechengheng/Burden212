@@ -10,12 +10,29 @@ function validateDate($date, $format = 'Ymd')
 function validateTime($time)
 {
         if (preg_match("/^(?(?=\d{2})(?:2[0-3]|[01][0-9])|[0-9]):[0-5][0-9]$/", $time)) {
-            return true; 
+            return true; //12hour and 24 hour clock correct
         }
         else{
         	return false;
         } 
 }
+
+function validateEndTime($startTime,$endTime)
+{
+	list($strHour, $strMin) = explode(':', $startTime);
+	list($endHour, $endMin) = explode(':', $endTime);
+
+	$startSeconds = mktime($strHour, $strMin);
+	$endSeconds   = mktime($endHour, $endMin);
+
+	if ($startSeconds > $endSeconds) {
+		return true; //start time is bigger than end time - invalid data
+	}
+	else {
+		return false;
+	}
+}
+
 function doBootstrap() {
 	
 	
@@ -131,12 +148,6 @@ function doBootstrap() {
 				
 				# for the project, the full error list is listed in the wiki
 
-				// Bid
-				// process each line, check for errors, then insert if no errors
-
-				// Course
-				// process each line, check for errors, then insert if no errors
-
 				$data = fgetcsv($course);
 				$row_Count = 1;
 			
@@ -149,6 +160,12 @@ function doBootstrap() {
 					$encountered_Error['line'] = $row_Count;
 					$encountered_Error['message'] = array();
 
+					//check if empty
+					if (isEmpty($data[0]) || isEmpty($data[1]) || isEmpty($data[2]) || isEmpty($data[3]) || isEmpty($data[4]) || isEmpty($data[5]) || isEmpty($data[6])){
+						array_push ($encountered_Error['message'],'Empty Field Encountered');
+						$errors[] = $encountered_Error;
+					}
+					else{
 
 					//check exam date format
 					if (validateDate($data[4])==false){
@@ -158,14 +175,10 @@ function doBootstrap() {
 					if (validateTime($data[5])==false){
 						array_push ($encountered_Error['message'],'invalid exam start');
 					}
-					//check exam end time format + later than start
-					if (validateTime($data[6])==false){
+					//check exam end time format + validate later than start
+					if (validateTime($data[6])==false || validateEndTime($data[5],$data[6])){
 						array_push ($encountered_Error['message'],'invalid exam end');
 					}
-					//validate later than start (buggy)
-					// if (validateTime($data[5])==$data[6]){
-					// 	array_push ($encountered_Error['message'],'invalid exam end');
-					// }
 
 					//check title <100 char
 					if (strlen($data[2])>100){
@@ -177,12 +190,6 @@ function doBootstrap() {
 						array_push ($encountered_Error['message'],'invalid description');
 					}
 
-					//check if empty
-					if (isEmpty($data[0]) && isEmpty($data[1]) && isEmpty($data[2]) && isEmpty($data[3]) && isEmpty($data[4]) && isEmpty($data[5]) && isEmpty($data[6])){
-
-						array_push ($encountered_Error['message'],'Empty Field Encountered');
- 						
-					}
 					//check if any errors
 					if (isEmpty($encountered_Error['message'])){
 						$newCourse = new Course($data[0], $data[1], $data[2], $data[3] , $data[4] , $data[5] , $data[6]);
@@ -192,6 +199,7 @@ function doBootstrap() {
 					else{
 						$errors[] = $encountered_Error;
 					}
+				}
 					
 
 
@@ -244,7 +252,7 @@ function doBootstrap() {
 
 
 					//check if empty
-					if (isEmpty($data[0]) && isEmpty($data[1]) && isEmpty($data[2]) && isEmpty($data[3])){
+					if (isEmpty($data[0]) || isEmpty($data[1]) || isEmpty($data[2]) || isEmpty($data[3])){
 
 						array_push ($encountered_Error['message'],'Empty Field Encountered');
  						
@@ -294,10 +302,10 @@ function doBootstrap() {
 					// 	array_push ($encountered_Error['message'],'invalid course completed');
 					// }
 					
-
+			
 					//check if empty
-					if (isEmpty($data[0]) && isEmpty($data[1]) && isEmpty($data[2])){
-
+					if (isEmpty($data[0]) || isEmpty($data[1])){
+						echo ('hitEmpty');
 						array_push ($encountered_Error['message'],'Empty Field Encountered');
  						
 					}
@@ -342,7 +350,7 @@ function doBootstrap() {
 					
 
 					//check if empty
-					if (isEmpty($data[0]) && isEmpty($data[1]) && isEmpty($data[2])){
+					if (isEmpty($data[0]) || isEmpty($data[1])){
 
 						array_push ($encountered_Error['message'],'Empty Field Encountered');
  						
@@ -379,20 +387,22 @@ function doBootstrap() {
 					
 					//check invalid course (buggy)
 					
-					//check section number is less than 100(buggy)
+					//check section number is less than 100
+					if ($data[1][0] != 'S' || !is_numeric(substr($data[1],1)) || substr($data[1],1) > 99 || substr($data[1],1) < 1 ){
+						array_push ($encountered_Error['message'],'invalid day');
+					}
 
+					//check invalid day between 1 - 7 only 
+					if ($data[2] > 7 && $data[2] < 1){
+						array_push ($encountered_Error['message'],'invalid day');
+					}
 
-					//check invalid day between 1 - 7 only (buggy)
-					// if (validateDate($data[4])==false){
-					// 	array_push ($encountered_Error['message'],'invalid exam date');
-					// }
-
-					//check exam start time format (buggy)
+					//check exam start time format
 					if (validateTime($data[3])==false){
 						array_push ($encountered_Error['message'],'invalid start');
 					}
 
-					//check exam end time format  (buggy)
+					//check exam end time format
 					if (validateTime($data[4])==false){
 						array_push ($encountered_Error['message'],'invalid end');
 					}
@@ -410,13 +420,14 @@ function doBootstrap() {
 					if (strlen($data[6])>100){
 						array_push ($encountered_Error['message'],'invalid venue');
 					}
-					//check size positive numeric (buggy)
-					// if (strlen($data[2])>100){
-					// 	array_push ($encountered_Error['message'],'invalid title');
-					// }
+
+					//check size positive numeric 
+					if (!is_numeric($data[7]) || $data[7]<0){
+						array_push ($encountered_Error['message'],'invalid size');
+					}
 
 					//check if empty
-					if (isEmpty($data[0]) && isEmpty($data[1]) && isEmpty($data[2]) && isEmpty($data[3]) && isEmpty($data[4]) && isEmpty($data[5]) && isEmpty($data[6]) && isEmpty($data[7])){
+					if (isEmpty($data[0]) || isEmpty($data[1]) || isEmpty($data[2]) || isEmpty($data[3]) || isEmpty($data[4]) || isEmpty($data[5]) || isEmpty($data[6]) || isEmpty($data[7])){
 
 						array_push ($encountered_Error['message'],'Empty Field Encountered');
  						
@@ -440,7 +451,7 @@ function doBootstrap() {
 				// process each line, check for errors, then insert if no errors
 				$data = fgetcsv($student);
 				$row_Count = 1;
-				
+				$encounteredUsers = array();
 
 				while( ($data = fgetcsv ($student)) !== false){
 					$row_Count ++; //header is row 1, code starts from 0
@@ -448,27 +459,30 @@ function doBootstrap() {
 					$encountered_Error['file'] = "student.csv";
 					$encountered_Error['line'] = $row_Count;
 					$encountered_Error['message'] = array();
-					$encounteredUsers = array();
+					
+					//check if empty
+					if (isEmpty($data[0]) || isEmpty($data[1]) || isEmpty($data[2]) || isEmpty($data[3]) || isEmpty($data[4]) ){
+						array_push ($encountered_Error['message'],'Empty Field Encountered');
+						$errors[] = $encountered_Error;
+					}
+					else{
 
-					//check userid <128 char
+						//check userid <128 char
 					if (strlen($data[0])>128){
 						array_push ($encountered_Error['message'],'invalid userid');
 					}
 
-					var_dump($encounteredUsers);
-					//check duplicate userid (BUGGY)
+					
+					//check duplicate userid 
 					if (in_array($data[0],$encounteredUsers)){
-						echo "hit";
 						array_push ($encountered_Error['message'],'duplicate userid');
 					}
 					else{
-						echo "hit2";
-						echo $data[0];
 						array_push ($encounteredUsers,$data[0]);
 					}
 
-					//check e-dollar(buggy)
-					if ((!is_numeric($data[4])) && strlen(substr(strrchr($field, "."), 1)) > 3)
+					//check e-dollar
+					if ((!is_numeric($data[4])) || strlen(substr(strrchr($data[4], "."), 1)) > 3|| $data[4]<0)
 					{
 						array_push ($encountered_Error['message'],'invalid e-dollar');
 					}
@@ -481,13 +495,6 @@ function doBootstrap() {
 					if (strlen($data[2])>128){
 						array_push ($encountered_Error['message'],'invalid name');
 					}
-
-					//check if empty
-					if (isEmpty($data[0]) && isEmpty($data[1]) && isEmpty($data[2]) && isEmpty($data[3]) && isEmpty($data[4]) ){
-
-						array_push ($encountered_Error['message'],'Empty Field Encountered');
- 						
-					}
 					
 					//check if any errors
 					if (isEmpty($encountered_Error['message'])){
@@ -499,6 +506,9 @@ function doBootstrap() {
 					else{
 						$errors[] = $encountered_Error;
 					}
+
+					}
+					
 					
 				}
 
