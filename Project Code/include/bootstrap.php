@@ -1,6 +1,21 @@
 <?php
 require_once 'common.php';
 
+function validateDate($date, $format = 'Ymd')
+{
+    $d = DateTime::createFromFormat($format, $date);
+    return $d && $d->format($format) === $date;
+}
+
+function validateTime($time)
+{
+        if (preg_match("/^(?(?=\d{2})(?:2[0-3]|[01][0-9])|[0-9]):[0-5][0-9]$/", $time)) {
+            return true; 
+        }
+        else{
+        	return false;
+        } 
+}
 function doBootstrap() {
 	
 	
@@ -21,6 +36,7 @@ function doBootstrap() {
 
 	# check file size
 	if ($_FILES["bootstrap-file"]["size"] <= 0) {
+		
 		$errors[] = "input files not found";
 	}
 	else {
@@ -36,7 +52,7 @@ function doBootstrap() {
 			$prerequisite_path = "$temp_dir/prerequisite.csv";
 			$section_path = "$temp_dir/section.csv";
 			$student_path = "$temp_dir/student.csv";
-			
+
 			$bid = @fopen($bid_path, "r");
 			$course_completed = @fopen($course_completed_path, "r");
 			$course = @fopen($course_path, "r");
@@ -122,14 +138,63 @@ function doBootstrap() {
 				// process each line, check for errors, then insert if no errors
 
 				$data = fgetcsv($course);
-
+				$row_Count = 1;
+			
+				//Validation format 
+				//
 				while( ($data = fgetcsv ($course)) !== false){
+					$row_Count ++; //header is row 1, code starts from 0
+					$encountered_Error = array();
+					$encountered_Error['file'] = "course.csv";
+					$encountered_Error['line'] = $row_Count;
+					$encountered_Error['message'] = array();
 
-					if (!empty($data[0]) && !empty($data[1]) && !empty($data[2]) && !empty($data[3]) && !empty($data[4]) && !empty($data[5]) && !empty($data[6])){
+
+					//check exam date format
+					if (validateDate($data[4])==false){
+						array_push ($encountered_Error['message'],'invalid exam date');
+					}
+					//check exam start time format
+					if (validateTime($data[5])==false){
+						array_push ($encountered_Error['message'],'invalid exam start');
+					}
+					//check exam end time format + later than start
+					if (validateTime($data[6])==false){
+						array_push ($encountered_Error['message'],'invalid exam end');
+					}
+					//validate later than start (buggy)
+					// if (validateTime($data[5])==$data[6]){
+					// 	array_push ($encountered_Error['message'],'invalid exam end');
+					// }
+
+					//check title <100 char
+					if (strlen($data[2])>100){
+						array_push ($encountered_Error['message'],'invalid title');
+					}
+
+					//check description <1000 char
+					if (strlen($data[3])>1000){
+						array_push ($encountered_Error['message'],'invalid description');
+					}
+
+					//check if empty
+					if (isEmpty($data[0]) && isEmpty($data[1]) && isEmpty($data[2]) && isEmpty($data[3]) && isEmpty($data[4]) && isEmpty($data[5]) && isEmpty($data[6])){
+
+						array_push ($encountered_Error['message'],'Empty Field Encountered');
+ 						
+					}
+					//check if any errors
+					if (isEmpty($encountered_Error['message'])){
 						$newCourse = new Course($data[0], $data[1], $data[2], $data[3] , $data[4] , $data[5] , $data[6]);
 						$CourseDAO->add($newCourse);
 						$course_processed++;
 					}
+					else{
+						$errors[] = $encountered_Error;
+					}
+					
+
+
 				}
 
 				// clean up
@@ -137,13 +202,65 @@ function doBootstrap() {
 				@unlink($course_path);
 
 				$data = fgetcsv($bid);
+				$row_Count = 1;
+
 				while( ($data = fgetcsv ($bid)) !== false){
-					
-					if (!empty($data[0]) && !empty($data[1]) && !empty($data[2]) && !empty($data[3])){
+					$row_Count ++; //header is row 1, code starts from 0
+					$encountered_Error = array();
+					$encountered_Error['file'] = "bid.csv";
+					$encountered_Error['line'] = $row_Count;
+					$encountered_Error['message'] = array();
+
+					//check invalid userid (buggy)
+					// if (validateDate($data[4])==false){
+					// 	array_push ($encountered_Error['message'],'invalid userid');
+					// }
+
+					//check invalid amount (buggy)
+					// if (validateTime($data[5])==false){
+					// 	array_push ($encountered_Error['message'],'invalid amount');
+					// }
+
+					//check invalid course (buggy)
+					// if (validateTime($data[6])==false){
+					// 	array_push ($encountered_Error['message'],'invalid course');
+					// }
+
+					//check invalid section (buggy)
+					// if (validateTime($data[6])==false){
+					// 	array_push ($encountered_Error['message'],'invalid section');
+					// }
+
+					//missing LOGIC Validations (7)
+
+					//"not own school course"
+					//"class timetable clash"
+					//"exam timetable clash"
+					//"incomplete prerequisites"	
+					//"course completed"
+					//"section limit reached"
+					//"not enough e-dollar"
+
+
+
+					//check if empty
+					if (isEmpty($data[0]) && isEmpty($data[1]) && isEmpty($data[2]) && isEmpty($data[3])){
+
+						array_push ($encountered_Error['message'],'Empty Field Encountered');
+ 						
+					}
+					//check if any errors
+					if (isEmpty($encountered_Error['message'])){
+						$newCourse = new Course($data[0], $data[1], $data[2], $data[3]);
 						$newBid = new Bid($data[0], $data[1], $data[2], $data[3]);
 						$bidDAO->add( $newBid );
 						$bid_processed++;
 					}
+					else{
+						$errors[] = $encountered_Error;
+					}
+
+				
 				}
 
 				// clean up
@@ -153,14 +270,46 @@ function doBootstrap() {
 				// Course Completed
 				// process each line, check for errors, then insert if no errors
 				$data = fgetcsv($course_completed);
+				$row_Count = 1;
 
 				while( ($data = fgetcsv ($course_completed)) !== false){
+					$row_Count ++; //header is row 1, code starts from 0
+					$encountered_Error = array();
+					$encountered_Error['file'] = "course_completed.csv";
+					$encountered_Error['line'] = $row_Count;
+					$encountered_Error['message'] = array();
 
-					if (!empty($data[0]) && !empty($data[1])){
+					//check invalid userid (buggy)
+					// if (validateDate($data[4])==false){
+					// 	array_push ($encountered_Error['message'],'invalid userid');
+					// }
+
+					//check invalid course (buggy)
+					// if (validateTime($data[5])==false){
+					// 	array_push ($encountered_Error['message'],'invalid course');
+					// }
+					
+					//check invalid course completed (buggy)
+					// if (validateTime($data[5])==false){
+					// 	array_push ($encountered_Error['message'],'invalid course completed');
+					// }
+					
+
+					//check if empty
+					if (isEmpty($data[0]) && isEmpty($data[1]) && isEmpty($data[2])){
+
+						array_push ($encountered_Error['message'],'Empty Field Encountered');
+ 						
+					}
+					//check if any errors
+					if (isEmpty($encountered_Error['message'])){
 						$newCourseCompleted = new CourseCompleted( $data[0], $data[1] );
 						$CourseCompletedDAO->add( $newCourseCompleted );
 
 						$course_completed_processed++;
+					}
+					else{
+						$errors[] = $encountered_Error;
 					}
 
 				}
@@ -172,14 +321,41 @@ function doBootstrap() {
 				// process each line, check for errors, then insert if no errors
 
 				$data = fgetcsv($prerequisite);
+				$row_Count = 1;
 
 				while( ($data = fgetcsv ($prerequisite)) !== false){
+					$row_Count ++; //header is row 1, code starts from 0
+					$encountered_Error = array();
+					$encountered_Error['file'] = "prerequisite.csv";
+					$encountered_Error['line'] = $row_Count;
+					$encountered_Error['message'] = array();
 
-					if (!empty($data[0]) && !empty($data[1])){
+					//check invalid userid (buggy)
+					// if (validateDate($data[4])==false){
+					// 	array_push ($encountered_Error['message'],'invalid course');
+					// }
+
+					//check invalid code (buggy)
+					// if (validateTime($data[5])==false){
+					// 	array_push ($encountered_Error['message'],'invalid prerequisite');
+					// }
+					
+
+					//check if empty
+					if (isEmpty($data[0]) && isEmpty($data[1]) && isEmpty($data[2])){
+
+						array_push ($encountered_Error['message'],'Empty Field Encountered');
+ 						
+					}
+					//check if any errors
+					if (isEmpty($encountered_Error['message'])){
 						$newPrerequisite = new Prerequisite( $data[0], $data[1] );
 						$PrerequisiteDAO->add( $newPrerequisite );
 
 						$prerequisite_processed++;
+					}
+					else{
+						$errors[] = $encountered_Error;
 					}
 
 				}
@@ -192,13 +368,67 @@ function doBootstrap() {
 				// process each line, check for errors, then insert if no errors
 
 				$data = fgetcsv($section);
+				$row_Count = 1;
 
 				while( ($data = fgetcsv ($section)) !== false){
+					$row_Count ++; //header is row 1, code starts from 0
+					$encountered_Error = array();
+					$encountered_Error['file'] = "section.csv";
+					$encountered_Error['line'] = $row_Count;
+					$encountered_Error['message'] = array();
+					
+					//check invalid course (buggy)
+					
+					//check section number is less than 100(buggy)
 
-					if (!empty($data[0]) && !empty($data[1]) && !empty($data[2]) && !empty($data[3]) && !empty($data[4]) && !empty($data[5]) && !empty($data[6]) && !empty($data[7])){
+
+					//check invalid day between 1 - 7 only (buggy)
+					// if (validateDate($data[4])==false){
+					// 	array_push ($encountered_Error['message'],'invalid exam date');
+					// }
+
+					//check exam start time format (buggy)
+					if (validateTime($data[3])==false){
+						array_push ($encountered_Error['message'],'invalid start');
+					}
+
+					//check exam end time format  (buggy)
+					if (validateTime($data[4])==false){
+						array_push ($encountered_Error['message'],'invalid end');
+					}
+
+					//validate end time should be later than start (buggy)
+					// if ($data[3]>$data[4]){
+					// 	array_push ($encountered_Error['message'],'invalid exam end');
+					// }
+
+					//check instructor <100 char
+					if (strlen($data[5])>100){
+						array_push ($encountered_Error['message'],'invalid instructor');
+					}
+					//check venue <100 char
+					if (strlen($data[6])>100){
+						array_push ($encountered_Error['message'],'invalid venue');
+					}
+					//check size positive numeric (buggy)
+					// if (strlen($data[2])>100){
+					// 	array_push ($encountered_Error['message'],'invalid title');
+					// }
+
+					//check if empty
+					if (isEmpty($data[0]) && isEmpty($data[1]) && isEmpty($data[2]) && isEmpty($data[3]) && isEmpty($data[4]) && isEmpty($data[5]) && isEmpty($data[6]) && isEmpty($data[7])){
+
+						array_push ($encountered_Error['message'],'Empty Field Encountered');
+ 						
+					}
+					//check if any errors
+					if (isEmpty($encountered_Error['message'])){
 						$newSection = new Section($data[0], $data[1], $data[2], $data[3] , $data[4] , $data[5] , $data[6], $data[7]);
 						$SectionDAO->add($newSection);
 						$section_processed++;
+					}
+					else{
+						$errors[] = $encountered_Error;
 					}
 				}
 
@@ -209,15 +439,67 @@ function doBootstrap() {
 				// Student
 				// process each line, check for errors, then insert if no errors
 				$data = fgetcsv($student);
+				$row_Count = 1;
+				
 
 				while( ($data = fgetcsv ($student)) !== false){
-					if (!empty($data[0]) && !empty($data[1]) && !empty($data[2]) && !empty($data[3]) && !empty($data[4])){
+					$row_Count ++; //header is row 1, code starts from 0
+					$encountered_Error = array();
+					$encountered_Error['file'] = "student.csv";
+					$encountered_Error['line'] = $row_Count;
+					$encountered_Error['message'] = array();
+					$encounteredUsers = array();
 
+					//check userid <128 char
+					if (strlen($data[0])>128){
+						array_push ($encountered_Error['message'],'invalid userid');
+					}
+
+					var_dump($encounteredUsers);
+					//check duplicate userid (BUGGY)
+					if (in_array($data[0],$encounteredUsers)){
+						echo "hit";
+						array_push ($encountered_Error['message'],'duplicate userid');
+					}
+					else{
+						echo "hit2";
+						echo $data[0];
+						array_push ($encounteredUsers,$data[0]);
+					}
+
+					//check e-dollar(buggy)
+					if ((!is_numeric($data[4])) && strlen(substr(strrchr($field, "."), 1)) > 3)
+					{
+						array_push ($encountered_Error['message'],'invalid e-dollar');
+					}
+					
+					//check password <128 char
+					if (strlen($data[1])>128){
+						array_push ($encountered_Error['message'],'invalid password');
+					}
+					//check password <128 char
+					if (strlen($data[2])>128){
+						array_push ($encountered_Error['message'],'invalid name');
+					}
+
+					//check if empty
+					if (isEmpty($data[0]) && isEmpty($data[1]) && isEmpty($data[2]) && isEmpty($data[3]) && isEmpty($data[4]) ){
+
+						array_push ($encountered_Error['message'],'Empty Field Encountered');
+ 						
+					}
+					
+					//check if any errors
+					if (isEmpty($encountered_Error['message'])){
 						$newStudent = new Student($data[0], $data[1], $data[2], $data[3] , $data[4]);
 
 						$StudentDAO->add($newStudent);
 						$student_processed++;
 					}
+					else{
+						$errors[] = $encountered_Error;
+					}
+					
 				}
 
 				// clean up
@@ -236,7 +518,15 @@ function doBootstrap() {
 		// $errors = $sortclass->sort_it($errors,"bootstrap");
 		$result = [ 
 			"status" => "error",
-			"messages" => $errors
+			"num-record-loaded" => [
+				"bid.csv" => $bid_processed,
+				"course_completed.csv" => $course_completed_processed,
+				"course.csv" => $course_processed,
+				"prerequisite.csv" => $prerequisite_processed,
+				"section.csv" => $section_processed,
+				"student.csv" => $student_processed
+			],
+			"error" => $errors
 		];
 	}
 	else
@@ -256,5 +546,6 @@ function doBootstrap() {
 	header('Content-Type: application/json');
 	echo json_encode($result, JSON_PRETTY_PRINT);
 }
+
 
 ?>
