@@ -384,7 +384,7 @@ function doBootstrap() {
 					}
 
 					//check input amount
-					if ((!is_numeric($data[1])) || strlen(substr(strrchr($data[1], "."), 1)) > 3|| $data[1]<10)
+					if ((!is_numeric($data[1])) || strlen(substr(strrchr($data[1], "."), 1)) > 2|| $data[1]<10)
 					{
 						array_push ($encountered_Error['message'],'invalid amount');
 					}
@@ -395,8 +395,8 @@ function doBootstrap() {
 					}
 					else
 					{
-						//check invalid section (buggy)
-						if(!in_array($data[3], $sectionDAO->retrieveByCourse($data[2])))
+						// //check invalid section 
+						if(!in_array($data[3], $SectionDAO->retrieveByCourse($data[2])))
 						{
 							array_push ($encountered_Error['message'],'invalid section');
 						}
@@ -411,9 +411,6 @@ function doBootstrap() {
 					//"course completed"
 					//"section limit reached"
 					//"not enough e-dollar"
-
-
-
 					
 					//check if any errors
 					if (empty($encountered_Error['message'])){
@@ -508,7 +505,21 @@ function doBootstrap() {
 						array_push ($encountered_Error['message'],'invalid course');
 					}
 
-					//check if pre-requisite course has yet to be attempted (buggy)
+					//check if course completed has a pre-req
+					$preReqs = $PrerequisiteDAO->retrievePrerequisites($data[1]);
+					$trigger = "0";
+					if(!empty(preReqs))
+					{
+						$currentCourses = $CourseCompletedDAO->retrieveCourseCompleted($data[0]);
+						foreach($preReqs as $element){
+							if(!in_array($element,$currentCourses)){
+								$trigger = "1";
+							}
+						}
+						if ($trigger == "1"){
+							array_push ($encountered_Error['message'],'invalid course completed');
+						}
+					}
 						
 					//check if any errors
 					if (empty($encountered_Error['message'])){

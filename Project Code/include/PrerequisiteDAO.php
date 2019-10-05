@@ -19,6 +19,24 @@ class PrerequisiteDAO {
 
         return $isAddOK;
     }
+
+    public function retrievePrerequisites($course) {
+        $sql = "select prerequisiteid from prerequisite where courseid=:course";
+
+        $connMgr = new ConnectionManager();      
+        $conn = $connMgr->getConnection();
+        $stmt = $conn->prepare($sql);
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+        $stmt->bindParam(':course', $course, PDO::PARAM_STR);
+        $stmt->execute();
+        
+        $courses = array();
+        while ($row =$stmt->fetch()){
+            array_push($courses, $row['prerequisiteid']);
+        }
+
+        return $courses;
+    }
 	
 	 public function removeAll() {
         $sql = 'TRUNCATE TABLE prerequisite';

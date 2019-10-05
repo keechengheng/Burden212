@@ -19,7 +19,25 @@ class CourseCompletedDAO {
 
         return $isAddOK;
     }
-	
+    
+    public function retrieveCourseCompleted($user) {
+        $sql = "select courseid from course_completed where userid=:user";
+
+        $connMgr = new ConnectionManager();      
+        $conn = $connMgr->getConnection();
+        $stmt = $conn->prepare($sql);
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+        $stmt->bindParam(':user', $user, PDO::PARAM_STR);
+        $stmt->execute();
+        
+        $courses = array();
+        while ($row =$stmt->fetch()){
+            array_push($courses, $row['courseid']);
+        }
+
+        return $courses;
+    }
+
 	 public function removeAll() {
         $sql = 'TRUNCATE TABLE course_completed';
         
