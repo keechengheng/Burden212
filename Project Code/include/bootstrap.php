@@ -508,7 +508,7 @@ function doBootstrap() {
 					//check if course completed has a pre-req
 					$preReqs = $PrerequisiteDAO->retrievePrerequisites($data[1]);
 					$trigger = "0";
-					if(!empty(preReqs))
+					if(!empty($preReqs))
 					{
 						$currentCourses = $CourseCompletedDAO->retrieveCourseCompleted($data[0]);
 						foreach($preReqs as $element){
