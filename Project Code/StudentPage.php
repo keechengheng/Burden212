@@ -29,11 +29,20 @@ else{
         $message="The system is currently on Round 2 of bidding.";
     }
 
+    $BidDAO = new BidDAO();
+    $retrieveBids = $BidDAO->retrieveBids($user->userid); //retrieve previous confirmed bids
+    $currentAmountSpent = 0;
+
+    foreach($retrieveBids as $element){
+        //calculate total Amount Spent
+        $currentAmountSpent = $currentAmountSpent + $element->amount;
+    }
 ?>
 <html>
 <body>
     <h1>Hello <?= $user->name ?> from <?= $user->school ?>, welcome back!</h1> 
     <h3>You have <?= $user->edollar ?> credits left. What would you like to do? </h3>    
+    <h3>You have reserved <?= $currentAmountSpent ?> credits for this bidding round. </h3>
     <h3><?= $message ?>  </h3>
 
     <h1>

@@ -53,11 +53,8 @@ class BidDAO {
         $stmt->bindParam(':userid', $student, PDO::PARAM_STR);
         $stmt->execute();
 
-        $studentBid = array();
         while ($row =$stmt->fetch()){
-            array_push($studentBid, $row['amount']);
-            array_push($studentBid, $row['courseid']);
-            array_push($studentBid, $row['section']);
+            $studentBid[]= new Bid ($row['userid'],$row['amount'],$row['courseid'],$row['section']);
         }
         return $studentBid; 
     }
