@@ -121,8 +121,8 @@ function doBootstrap() {
 				
 				# truncate current SQL tables
 
-				$bidDAO = new BidDAO();
-				$bidDAO -> removeAll();
+				$BidDAO = new BidDAO();
+				$BidDAO -> removeAll();
 
 				$CourseCompletedDAO = new CourseCompletedDAO();
 				$CourseCompletedDAO -> removeAll();
@@ -578,7 +578,7 @@ function doBootstrap() {
 					}
 
 					//"section limit reached"
-					if (count($bidDAO->retrieveBids($data[0]))>5)
+					if (count($BidDAO->retrieveBids($data[0]))>5)
 					{
 						array_push ($encountered_Error['message'],'section limit reached');
 					}
@@ -602,7 +602,7 @@ function doBootstrap() {
 
 					if (empty($encountered_Error['message'])){
 						$newBid = new Bid($data[0], $data[1], $data[2], $data[3]);
-						$bidDAO->add( $newBid );
+						$BidDAO->add( $newBid );
 						$bid_processed++;
 					}
 					else{
