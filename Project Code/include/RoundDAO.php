@@ -2,26 +2,8 @@
 
 class RoundDAO {
 
-    // public function add($prerequisite) {
-    //     $sql = "INSERT IGNORE INTO prerequisite (courseid, prerequisiteid) VALUES (:courseid, :prerequisiteid)";
-
-    //     $connMgr = new ConnectionManager();      
-    //     $conn = $connMgr->getConnection();
-    //     $stmt = $conn->prepare($sql);
-        
-    //     $stmt->bindParam(':courseid', $prerequisite->courseid, PDO::PARAM_STR);
-    //     $stmt->bindParam(':prerequisiteid', $prerequisite->prerequisiteid, PDO::PARAM_STR);
-
-    //     $isAddOK = False;
-    //     if ($stmt->execute()) {
-    //         $isAddOK = True;
-    //     }
-
-    //     return $isAddOK;
-    // }
-
     public function retrieveRound() {
-        $sql = "select roundid from round";
+        $sql = "select roundid, statusid from round";
 
         $connMgr = new ConnectionManager();      
         $conn = $connMgr->getConnection();
@@ -30,12 +12,84 @@ class RoundDAO {
         $stmt->setFetchMode(PDO::FETCH_ASSOC);
         $stmt->execute();
         
-        $round = array();
+        $results = array();
         while ($row =$stmt->fetch()){
-            array_push($round, $row['roundid']);
+            array_push($results, $row['roundid']);
+            array_push($results, $row['statusid']);
         }
 
-        return $round;
+        return $results;
+    }
+
+    public function closeBid() {
+        $sql = "UPDATE `round` SET `roundid`='0',`statusid`='0' WHERE `rowid`='1'";
+
+        $connMgr = new ConnectionManager();      
+        $conn = $connMgr->getConnection();
+        $stmt = $conn->prepare($sql);
+
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+        $stmt->execute();
+        
+        $isUpdateOk = False;
+        if ($stmt->execute()) {
+            $isUpdateOk = True;
+        }
+
+        return $isUpdateOk;
+    }
+
+    public function activateRoundOne() {
+        $sql = "UPDATE `round` SET `roundid`='1', `statusid`='1' WHERE `rowid`='1'";
+
+        $connMgr = new ConnectionManager();      
+        $conn = $connMgr->getConnection();
+        $stmt = $conn->prepare($sql);
+
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+        $stmt->execute();
+        
+        $isUpdateOk = False;
+        if ($stmt->execute()) {
+            $isUpdateOk = True;
+        }
+
+        return $isUpdateOk;
+    }
+    public function closeRoundOne() {
+        $sql = "UPDATE `round` SET `roundid`='1', `statusid`='0' WHERE `rowid`='1'";
+
+        $connMgr = new ConnectionManager();      
+        $conn = $connMgr->getConnection();
+        $stmt = $conn->prepare($sql);
+
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+        $stmt->execute();
+        
+        $isUpdateOk = False;
+        if ($stmt->execute()) {
+            $isUpdateOk = True;
+        }
+
+        return $isUpdateOk;
+    }
+
+    public function activateRoundTwo() {
+        $sql = "UPDATE `round` SET `roundid`='2', `statusid`='1' WHERE `rowid`='1'";
+
+        $connMgr = new ConnectionManager();      
+        $conn = $connMgr->getConnection();
+        $stmt = $conn->prepare($sql);
+
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+        $stmt->execute();
+        
+        $isUpdateOk = False;
+        if ($stmt->execute()) {
+            $isUpdateOk = True;
+        }
+
+        return $isUpdateOk;
     }
 
 	

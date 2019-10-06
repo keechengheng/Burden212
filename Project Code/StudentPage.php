@@ -13,17 +13,18 @@ else{
 }
 
     $roundDAO = new RoundDAO();
-    $round = $dao ->retrieveRound();
+    $round = $roundDAO ->retrieveRound();
+    $_SESSION['round'] = $round;
 
-    if ($round[0] == 0)
+    if ($round[0] == "0")
     {
         $message="The system is currently not open for bidding.";
     }
-    if ($round[0] == 1)
+    if ($round[0] == "1")
     {
         $message="The system is currently on Round 1 of bidding.";
     }
-    if ($round[0] == 2)
+    if ($round[0] == "2")
     {
         $message="The system is currently on Round 2 of bidding.";
     }
@@ -31,7 +32,7 @@ else{
 ?>
 <html>
 <body>
-    <h1>Hello, <?= $user->name ?> from <?= $user->school ?>, welcome back!</h1> 
+    <h1>Hello <?= $user->name ?> from <?= $user->school ?>, welcome back!</h1> 
     <h3>You have <?= $user->edollar ?> credits left. What would you like to do? </h3>    
     <h3><?= $message ?>  </h3>
 
