@@ -158,6 +158,7 @@ function doBootstrap() {
 				//Validation format 
 				
 				while( ($data = fgetcsv ($course)) !== false){
+					$data = array_map('trim', $data);
 					$row_Count ++; //header is row 1, code starts from 0
 					$encountered_Error = array();
 					$encountered_Error['file'] = "course.csv";
@@ -223,6 +224,7 @@ function doBootstrap() {
 				$encounteredUsers = array();
 
 				while( ($data = fgetcsv ($student)) !== false){
+					$data = array_map('trim', $data);
 					$row_Count ++; //header is row 1, code starts from 0
 					$encountered_Error = array();
 					$encountered_Error['file'] = "student.csv";
@@ -291,6 +293,7 @@ function doBootstrap() {
 				$encounteredSections = array();
 
 				while( ($data = fgetcsv ($section)) !== false){
+					$data = array_map('trim', $data);
 					$row_Count ++; //header is row 1, code starts from 0
 					$encountered_Error = array();
 					$encountered_Error['file'] = "section.csv";
@@ -370,6 +373,7 @@ function doBootstrap() {
 				$row_Count = 1;
 
 				while( ($data = fgetcsv ($prerequisite)) !== false){
+					$data = array_map('trim', $data);
 					$row_Count ++; //header is row 1, code starts from 0
 					$encountered_Error = array();
 					$encountered_Error['file'] = "prerequisite.csv";
@@ -416,6 +420,7 @@ function doBootstrap() {
 				$row_Count = 1;
 
 				while( ($data = fgetcsv ($course_completed)) !== false){
+					$data = array_map('trim', $data);
 					$row_Count ++; //header is row 1, code starts from 0
 					$encountered_Error = array();
 					$encountered_Error['file'] = "course_completed.csv";
@@ -476,6 +481,7 @@ function doBootstrap() {
 				$row_Count = 1;
 
 				while( ($data = fgetcsv ($bid)) !== false){
+					$data = array_map('trim', $data);
 					$row_Count ++; //header is row 1, code starts from 0
 					$encountered_Error = array();
 					$encountered_Error['file'] = "bid.csv";
@@ -518,6 +524,7 @@ function doBootstrap() {
 					//check error log, if empty - execute logic validation
 					if (empty($encountered_Error['message'])){
 					//LOGIC Validations (7)
+					$retrieveBids = $BidDAO->retrieveBids($data[0]); //retrieve previous confirmed bids
 
 					//"not own school course"
 
@@ -530,7 +537,6 @@ function doBootstrap() {
 					}
 					
 					//"class timetable clash"
-					$retrieveBids = $BidDAO->retrieveBids($data[0]); //retrieve previous bids
 					foreach($retrieveBids as $element){
 						//retrieve bid's day and start time 
 						$biddedSection = $SectionDAO ->retrieveByCourseSection($element->courseid,$element->section);
@@ -543,7 +549,6 @@ function doBootstrap() {
 					}
 
 					//"exam timetable clash" 
-					$retrieveBids = $BidDAO->retrieveBids($data[0]); //retrieve previous bids
 					foreach($retrieveBids as $element){
 						//retrieve bid's day and start time 
 						$biddedExam = $CourseDAO ->retrieveExam($element->courseid);
@@ -583,28 +588,52 @@ function doBootstrap() {
 						array_push ($encountered_Error['message'],'section limit reached');
 					}
 
-					//"not enough e-dollar" (pending)
+					if (empty($encountered_Error['message'])){
+
+					//"not enough e-dollar" 
 					$retrieveUser = $StudentDAO->retrieve($data[0]); //check current e-dollar amount
-					if ($retrieveUser->edollar < $data[1]){
-						array_push ($encountered_Error['message'],'not enough e-dollar');
-					}
-					else{
-						//retrieve previous successful bids of this user
-						$retrieveBids = $BidDAO->retrieveBids($data[0]);
-						//check if its a previously bidded course
-						foreach($retrieveBids as $element){
-							if($element->courseid == $data[2]){
-								//it is a previously bidded course
-								$differenceAmount = $element->amount - $data[1];
-							}
+					$currentAmountSpent = 0;
+					$trigger = "0";
+					$previousBid = 0;
+					//calculate current Amount Spent
+					foreach($retrieveBids as $element){
+						//check if its an existing bid
+						if ($element->courseid == $data[2])
+						{
+							//bidded for the same course previously
+							$previousBid = $element->amount;
+							$trigger="1";
 						}
+						//calculate total Amount Spent
+						$currentAmountSpent = $currentAmountSpent + $element->amount;
 					}
 
-					if (empty($encountered_Error['message'])){
-						$newBid = new Bid($data[0], $data[1], $data[2], $data[3]);
-						$BidDAO->add( $newBid );
-						$bid_processed++;
+					if ($trigger == "1"){
+						//check if new balance allows or not
+						if ($retrieveUser->edollar < ($currentAmountSpent + $data[1] - $previousBid)){
+							array_push ($encountered_Error['message'],'not enough e-dollar');
+							$errors[] = $encountered_Error;
+						}
+						else{
+							//update with new bid amount + new section
+							$BidDAO -> update($data[0],$data[2],$data[1],$data[3]);
+							$bid_processed++;
+						}
 					}
+					else{
+						if ($retrieveUser->edollar < ($currentAmountSpent + $data[1])){
+							array_push ($encountered_Error['message'],'not enough e-dollar');
+							$errors[] = $encountered_Error;
+						}
+						else{
+							//update with new bid amount
+							$newBid = new Bid($data[0], $data[1], $data[2], $data[3]);
+							$BidDAO->add( $newBid );
+							$bid_processed++;
+						}
+					}
+				}
+
 					else{
 						$errors[] = $encountered_Error;
 					}

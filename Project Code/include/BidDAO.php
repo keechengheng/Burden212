@@ -22,6 +22,26 @@ class BidDAO {
         return $isAddOK;
     }
 
+    public function update($userid, $courseid, $amount,$section) {
+        $sql = "UPDATE bid set amount=:amount, section=:section where userid=:userid and courseid=:courseid";
+
+        $connMgr = new ConnectionManager();      
+        $conn = $connMgr->getConnection();
+        $stmt = $conn->prepare($sql);
+        
+        $stmt->bindParam(':amount', $amount, PDO::PARAM_INT);
+        $stmt->bindParam(':section', $section, PDO::PARAM_STR);
+        $stmt->bindParam(':userid', $userid, PDO::PARAM_STR);
+        $stmt->bindParam(':courseid', $courseid, PDO::PARAM_STR);
+
+        $isAddOK = False;
+        if ($stmt->execute()) {
+            $isAddOK = True;
+        }
+
+        return $isAddOK;
+    }
+
     public  function retrieveBids($student) {
         $sql = 'select * from bid where userid=:userid';
         
