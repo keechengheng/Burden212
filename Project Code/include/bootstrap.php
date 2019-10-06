@@ -33,6 +33,10 @@ function validateEndTime($startTime,$endTime)
 	}
 }
 
+//trigger round 1 to begin
+$roundDAO = new RoundDAO();
+$roundDAO ->activateRoundOne();
+
 function doBootstrap() {
 	
 	
@@ -358,77 +362,6 @@ function doBootstrap() {
 				@unlink($section_path);
 
 
-				$data = fgetcsv($bid);
-				$row_Count = 1;
-
-				while( ($data = fgetcsv ($bid)) !== false){
-					$row_Count ++; //header is row 1, code starts from 0
-					$encountered_Error = array();
-					$encountered_Error['file'] = "bid.csv";
-					$encountered_Error['line'] = $row_Count;
-					$encountered_Error['message'] = array();
-
-					//check if empty
-					if (empty($data[0]) || empty($data[1]) || empty($data[2]) || empty($data[3])){
-
-						array_push ($encountered_Error['message'],'Empty Field Encountered');
-						$errors[] = $encountered_Error;
-					}
-					else{
-
-
-					//check invalid userid - ensure student table is above bid
-					
-					if (!in_array($data[0],$encounteredUsers)){
-						array_push ($encountered_Error['message'],'invalid userid');
-					}
-
-					//check input amount
-					if ((!is_numeric($data[1])) || strlen(substr(strrchr($data[1], "."), 1)) > 2|| $data[1]<10)
-					{
-						array_push ($encountered_Error['message'],'invalid amount');
-					}
-
-					//check invalid course - ensure course table is above bid
-					if (!in_array($data[2],$encounteredCourses)){
-						array_push ($encountered_Error['message'],'invalid course');
-					}
-					else
-					{
-						// //check invalid section 
-						if(!in_array($data[3], $SectionDAO->retrieveByCourse($data[2])))
-						{
-							array_push ($encountered_Error['message'],'invalid section');
-						}
-					}
-
-					//missing LOGIC Validations (7)
-
-					//"not own school course"
-					//"class timetable clash"
-					//"exam timetable clash"
-					//"incomplete prerequisites"	
-					//"course completed"
-					//"section limit reached"
-					//"not enough e-dollar"
-					
-					//check if any errors
-					if (empty($encountered_Error['message'])){
-						$newCourse = new Course($data[0], $data[1], $data[2], $data[3]);
-						$newBid = new Bid($data[0], $data[1], $data[2], $data[3]);
-						$bidDAO->add( $newBid );
-						$bid_processed++;
-					}
-					else{
-						$errors[] = $encountered_Error;
-					}
-				}
-				
-				}
-
-				// clean up
-				fclose($bid);
-				@unlink($bid_path);
 
 				// Prerequisite
 				// process each line, check for errors, then insert if no errors
@@ -537,6 +470,158 @@ function doBootstrap() {
 				fclose($course_completed);
 				@unlink($course_completed_path);
 
+
+				
+				$data = fgetcsv($bid);
+				$row_Count = 1;
+
+				while( ($data = fgetcsv ($bid)) !== false){
+					$row_Count ++; //header is row 1, code starts from 0
+					$encountered_Error = array();
+					$encountered_Error['file'] = "bid.csv";
+					$encountered_Error['line'] = $row_Count;
+					$encountered_Error['message'] = array();
+
+					//check if empty
+					if (empty($data[0]) || empty($data[1]) || empty($data[2]) || empty($data[3])){
+
+						array_push ($encountered_Error['message'],'Empty Field Encountered');
+						$errors[] = $encountered_Error;
+					}
+					else{
+
+					//check invalid userid - ensure student table is above bid
+					
+					if (!in_array($data[0],$encounteredUsers)){
+						array_push ($encountered_Error['message'],'invalid userid');
+					}
+
+					//check input amount
+					if ((!is_numeric($data[1])) || strlen(substr(strrchr($data[1], "."), 1)) > 2|| $data[1]<10)
+					{
+						array_push ($encountered_Error['message'],'invalid amount');
+					}
+
+					//check invalid course - ensure course table is above bid
+					if (!in_array($data[2],$encounteredCourses)){
+						array_push ($encountered_Error['message'],'invalid course');
+					}
+					else
+					{
+						// //check invalid section 
+						if(!in_array($data[3], $SectionDAO->retrieveByCourse($data[2])))
+						{
+							array_push ($encountered_Error['message'],'invalid section');
+						}
+					}
+					//validation completed
+					//check error log, if empty - execute logic validation
+					if (empty($encountered_Error['message'])){
+					//LOGIC Validations (7)
+
+					//"not own school course"
+
+					if ($_SESSION['round']=="1"){
+						$studentObj = $StudentDAO->retrieve($data[0]);
+						$courseObj = $CourseDAO->retrieveSchool($data[2]);
+						if ($studentObj->school != $courseObj){
+							array_push ($encountered_Error['message'],'not own school course');
+						}
+					}
+					
+					//"class timetable clash"
+					$retrieveBids = $BidDAO->retrieveBids($data[0]); //retrieve previous bids
+					foreach($retrieveBids as $element){
+						//retrieve bid's day and start time 
+						$biddedSection = $SectionDAO ->retrieveByCourseSection($element->courseid,$element->section);
+						//retrieve day and start time base on section and course
+						$retrieveSection = $SectionDAO ->retrieveByCourseSection($data[2],$data[3]);
+						if($biddedSection->day == $retrieveSection->day && $biddedSection->start == $retrieveSection->start){
+							//it clashes
+							array_push ($encountered_Error['message'],'class timetable clash');
+						}
+					}
+
+					//"exam timetable clash" 
+					$retrieveBids = $BidDAO->retrieveBids($data[0]); //retrieve previous bids
+					foreach($retrieveBids as $element){
+						//retrieve bid's day and start time 
+						$biddedExam = $CourseDAO ->retrieveExam($element->courseid);
+						//retrieve day and start time base on section and course
+						$retrieveExam = $CourseDAO ->retrieveExam($data[2]);
+						if($biddedSection->exam_date == $retrieveSection->exam_date && $biddedSection->exam_start == $retrieveSection->exam_start){
+							//it clashes
+							array_push ($encountered_Error['message'],'exam timetable clash');
+						}
+					}
+
+					//"incomplete prerequisites" 
+					$preReqs = $PrerequisiteDAO->retrievePrerequisites($data[2]);
+					$trigger = "0";
+					if(!empty($preReqs))
+					{
+						$coursesCompleted = $CourseCompletedDAO->retrieveCourseCompleted($data[0]);
+						foreach($preReqs as $element){
+							if(!in_array($element,$coursesCompleted)){
+								$trigger = "1";
+							}
+						}
+						if ($trigger == "1"){
+							array_push ($encountered_Error['message'],'incomplete prerequisites');
+						}
+					}
+					
+					//"course completed"
+					$coursesCompleted = $CourseCompletedDAO->retrieveCourseCompleted($data[0]);
+					if(in_array($data[2],$coursesCompleted)){
+						array_push ($encountered_Error['message'],'course completed');
+					}
+
+					//"section limit reached"
+					if (count($bidDAO->retrieveBids($data[0]))>5)
+					{
+						array_push ($encountered_Error['message'],'section limit reached');
+					}
+
+					//"not enough e-dollar" (pending)
+					$retrieveUser = $StudentDAO->retrieve($data[0]); //check current e-dollar amount
+					if ($retrieveUser->edollar < $data[1]){
+						array_push ($encountered_Error['message'],'not enough e-dollar');
+					}
+					else{
+						//retrieve previous successful bids of this user
+						$retrieveBids = $BidDAO->retrieveBids($data[0]);
+						//check if its a previously bidded course
+						foreach($retrieveBids as $element){
+							if($element->courseid == $data[2]){
+								//it is a previously bidded course
+								$differenceAmount = $element->amount - $data[1];
+							}
+						}
+					}
+
+					if (empty($encountered_Error['message'])){
+						$newBid = new Bid($data[0], $data[1], $data[2], $data[3]);
+						$bidDAO->add( $newBid );
+						$bid_processed++;
+					}
+					else{
+						$errors[] = $encountered_Error;
+					}
+
+				}
+				else{	
+						$errors[] = $encountered_Error;
+				}
+
+				}
+				
+				}
+
+				// clean up
+				fclose($bid);
+				@unlink($bid_path);
+
 				
 				
 
@@ -580,6 +665,8 @@ function doBootstrap() {
 	}
 	header('Content-Type: application/json');
 	echo json_encode($result, JSON_PRETTY_PRINT);
+
+	
 }
 
 

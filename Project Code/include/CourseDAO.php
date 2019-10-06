@@ -24,6 +24,45 @@ class CourseDAO {
 
         return $isAddOK;
     }
+    
+    public  function retrieveSchool($course) {
+        $sql = 'select school from course where courseid=:courseid';
+        
+        $connMgr = new ConnectionManager();
+        $conn = $connMgr->getConnection();
+        
+        $stmt = $conn->prepare($sql);
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+        $stmt->bindParam(':courseid', $course, PDO::PARAM_STR);
+        $stmt->execute();
+
+
+        while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            return $value = $row['school'];
+          }
+    }
+
+
+    public  function retrieveExam($course) {
+        $sql = 'select exam_date,exam_start from course where courseid=:courseid';
+        
+        $connMgr = new ConnectionManager();
+        $conn = $connMgr->getConnection();
+        
+        $stmt = $conn->prepare($sql);
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+        $stmt->bindParam(':courseid', $course, PDO::PARAM_STR);
+        $stmt->execute();
+
+
+        $exams = array();
+        while ($row =$stmt->fetch()){
+            array_push($exams, $row['exam_date']);
+            array_push($exams, $row['exam_start']);
+        }
+        
+        return $exams;
+    }
 	
 	 public function removeAll() {
         $sql = '
