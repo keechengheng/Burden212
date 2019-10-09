@@ -58,6 +58,22 @@ class BidDAO {
         }
         return $studentBid; 
     }
+
+    public function checkForSimilarCourseBid($student,$courseid){
+        $sql = 'select * from bid where userid=:userid and courseid=:courseid';
+        
+        $connMgr = new ConnectionManager();
+        $conn = $connMgr->getConnection();
+        
+        $stmt = $conn->prepare($sql);
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+        $stmt->bindParam(':userid', $student, PDO::PARAM_STR);
+        $stmt->bindParam(':courseid', $courseid, PDO::PARAM_STR);
+        $stmt->execute();
+        
+        return $stmt->rowCount();
+    
+    }
 	
 	 public function removeAll() {
         $sql = 'TRUNCATE TABLE bid';

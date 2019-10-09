@@ -535,30 +535,37 @@ function doBootstrap() {
 							array_push ($encountered_Error['message'],'not own school course');
 						}
 					}
-					
-					//"class timetable clash"
-					foreach($retrieveBids as $element){
-						//retrieve bid's day and start time 
-						$biddedSection = $SectionDAO ->retrieveByCourseSection($element->courseid,$element->section);
-						//retrieve day and start time base on section and course
-						$retrieveSection = $SectionDAO ->retrieveByCourseSection($data[2],$data[3]);
-						if($biddedSection->day == $retrieveSection->day && $biddedSection->start == $retrieveSection->start){
-							//it clashes
-							array_push ($encountered_Error['message'],'class timetable clash');
-						}
-					}
 
-					//"exam timetable clash" 
-					foreach($retrieveBids as $element){
-						//retrieve bid's day and start time 
-						$biddedExam = $CourseDAO ->retrieveExam($element->courseid);
-						//retrieve day and start time base on section and course
-						$retrieveExam = $CourseDAO ->retrieveExam($data[2]);
-						if($biddedSection->exam_date == $retrieveSection->exam_date && $biddedSection->exam_start == $retrieveSection->exam_start){
-							//it clashes
-							array_push ($encountered_Error['message'],'exam timetable clash');
+				
+					//if matching course, skips exam timetable check
+					if (($BidDAO ->checkForSimilarCourseBid($data[0],$data[2]))==false){
+
+						//"class timetable clash"
+						foreach($retrieveBids as $element){
+							//retrieve bid's day and start time 
+							$biddedSection = $SectionDAO ->retrieveByCourseSection($element->courseid,$element->section);
+							//retrieve day and start time base on section and course
+							$retrieveSection = $SectionDAO ->retrieveByCourseSection($data[2],$data[3]);
+							if($biddedSection->day == $retrieveSection->day && $biddedSection->start == $retrieveSection->start){
+								//it clashes
+								array_push ($encountered_Error['message'],'class timetable clash');
+							}
+						}
+
+						//"exam timetable clash" 
+						foreach($retrieveBids as $element){
+							//retrieve bid's day and start time 
+							$biddedExam = $CourseDAO ->retrieveExam($element->courseid);
+							//retrieve day and start time base on section and course
+							$retrieveExam = $CourseDAO ->retrieveExam($data[2]);
+							if($biddedSection->exam_date == $retrieveSection->exam_date && $biddedSection->exam_start == $retrieveSection->exam_start){
+								//it clashes
+								array_push ($encountered_Error['message'],'exam timetable clash');
+							}
 						}
 					}
+					
+					
 
 					//"incomplete prerequisites" 
 					$preReqs = $PrerequisiteDAO->retrievePrerequisites($data[2]);
