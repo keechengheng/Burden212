@@ -59,6 +59,7 @@ class BidDAO {
         return $studentBid; 
     }
     
+
     public function checkForSimilarCourseBid($student,$courseid){
         $sql = 'select * from bid where userid=:userid and courseid=:courseid';
         
@@ -75,6 +76,7 @@ class BidDAO {
     
     }
 
+	
 	 public function removeAll() {
         $sql = 'TRUNCATE TABLE bid';
         
