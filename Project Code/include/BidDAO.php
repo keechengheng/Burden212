@@ -42,17 +42,18 @@ class BidDAO {
         return $isAddOK;
     }
 
-    public  function retrieveBids($student) {
+    public function retrieveBids($student) {
         $sql = 'select * from bid where userid=:userid';
         
         $connMgr = new ConnectionManager();
         $conn = $connMgr->getConnection();
         
         $stmt = $conn->prepare($sql);
-        $stmt->setFetchMode(PDO::FETCH_ASSOC);
         $stmt->bindParam(':userid', $student, PDO::PARAM_STR);
         $stmt->execute();
-
+        
+        $studentBid = [];
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
         while ($row =$stmt->fetch()){
             $studentBid[]= new Bid ($row['userid'],$row['amount'],$row['courseid'],$row['section']);
         }

@@ -81,7 +81,23 @@ class SectionDAO {
         $stmt->execute();
         $count = $stmt->rowCount();
     }    
-	
-}
+    
+    public function retrieveAll() {
+        $connMgr = new ConnectionManager();      
+        $conn = $connMgr->getConnection();
+        $sql = "select * from section";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
 
+        $sectionAll = [];
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+        while ($row = $stmt->fetch()) {
+            $sectionAll[] = new Section($row['courseid'], $row['section'], $row['day'], 
+                                    $row['start'],$row['end'],$row['instructor'],
+                                    $row['venue'],$row['size']);
+           
+    }
+        return $sectionAll;
+}
+}
 
