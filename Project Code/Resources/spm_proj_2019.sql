@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Sep 24, 2019 at 06:33 AM
+-- Generation Time: Oct 09, 2019 at 12:37 PM
 -- Server version: 5.7.26
 -- PHP Version: 7.3.7
 
@@ -13,8 +13,6 @@ SET time_zone = "+00:00";
 --
 -- Database: `spm_proj_2019`
 --
-CREATE DATABASE IF NOT EXISTS `spm_proj_2019` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
-USE `spm_proj_2019`;
 
 DELIMITER $$
 --
@@ -313,6 +311,25 @@ INSERT INTO `prerequisite` (`courseid`, `prerequisiteid`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `round`
+--
+
+CREATE TABLE `round` (
+  `rowid` int(11) NOT NULL,
+  `roundid` int(11) NOT NULL,
+  `statusid` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `round`
+--
+
+INSERT INTO `round` (`rowid`, `roundid`, `statusid`) VALUES
+(1, 0, 0);
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `section`
 --
 
@@ -444,6 +461,12 @@ ALTER TABLE `course_completed`
 ALTER TABLE `prerequisite`
   ADD PRIMARY KEY (`courseid`,`prerequisiteid`),
   ADD KEY `prerequisite_fk1` (`prerequisiteid`);
+
+--
+-- Indexes for table `round`
+--
+ALTER TABLE `round`
+  ADD PRIMARY KEY (`rowid`);
 
 --
 -- Indexes for table `section`
