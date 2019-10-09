@@ -4,6 +4,10 @@ require_once 'include/common.php';
 
 $error = '';
 
+if  (isset($_SESSION['userid'])) {
+	session_unset();
+}
+
 if ( isset($_GET['error']) ) {
     $error = $_GET['error'];
 } elseif ( isset($_POST['userid']) && isset($_POST['password']) ) {
@@ -16,17 +20,21 @@ if ( isset($_GET['error']) ) {
     if($username !== 'Admin'){
         $user = $dao->retrieve($username);
 
-        if ( $user != null && $user->authenticate($password) ) {
-            $_SESSION['userid'] = $username; 
-            header("Location: StudentPage.php");
-            return;
-    
-        } else {
-            $error = 'Incorrect UserID or Password!';
+        if ( $user != null ){
+            if ( $user->authenticate($password) ){
+                $_SESSION['userid'] = $username; 
+                header("Location: StudentPage.php");
+                return;
+            }
+            else{
+                $error = 'Incorrect Password!';
+            }
+        }
+        else{
+            $error = 'Incorrect UserID!';
         }
     }
     else{
-
         $user = new Student();
         if ( $user->adminLogin($password) ) {
             $_SESSION['userid'] = $username; 
@@ -34,9 +42,8 @@ if ( isset($_GET['error']) ) {
             return;
 
         } else {
-            $error = 'Incorrect UserID or Password!';
+            $error = 'Password!';
         }
-
     }
 
 

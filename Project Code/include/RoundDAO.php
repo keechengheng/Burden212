@@ -71,6 +71,35 @@ class RoundDAO {
             $isUpdateOk = True;
         }
 
+        $sql = "SELECT DISTINCT COURSEID, SECTION FROM BID";
+
+
+        $sql = $conn->prepare($sql);
+        $stmt->execute();
+
+        while ($row =$stmt->fetch()){
+            $scBids[] = [$row['COURSEID'],$row['SECTION']];
+        }
+
+        $sql = "SELECT * FROM BID WHERE COURSEID = :COURSEID AND SECTION = :SECTION ORDER BY AMOUNT DESC";
+
+        $stmt = $conn->prepare($sql);
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+
+        foreach ($scBids as $item) {
+            $stmt->bindParam(':COURSEID', $item[0], PDO::PARAM_STR);
+            $stmt->bindParam(':SECTION', $item[1], PDO::PARAM_STR);
+            $stmt->execute();
+
+            while ($row =$stmt->fetch()){
+                $sectionBids[] = new Bid ($row['userid'],$row['amount'],$row['courseid'],$row['section']);
+            }
+
+            processBID($sectionBids, $item[0], $item[1], 1); #Incomplete function
+
+            $sectionBids = []; 
+        }
+
         return $isUpdateOk;
     }
 
