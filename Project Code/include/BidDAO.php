@@ -128,6 +128,15 @@ class BidDAO {
             }
 
             #NEED TO REDUCE COURSE + SECTION SIZE (USE SQL UPDATE)
+            $sql = "UPDATE bidding_results set size = :size where section = :section and courseid = :courseid";
+
+            $stmt = $conn->prepare($sql);
+            
+            $stmt->bindParam(':size', $size-sizeof($sectionBids), PDO::PARAM_INT);
+            $stmt->bindParam(':section', $section, PDO::PARAM_STR);
+            $stmt->bindParam(':courseid', $courseid, PDO::PARAM_STR);
+    
+            $stmt->execute();
         }
         else{
             $clearingPrice = $sectionBids[$size-1]->amount;
@@ -143,6 +152,7 @@ class BidDAO {
             if ($clearingPrice == $rejectPrice){
                 #run checking code to see if amount = clearing price in order to drop bid
                 $index = 1;
+                $numOfSuccess = 0;
                 foreach ($sectionBids as $bid){
                     if($index <= $size && $bid->amount != $clearingPrice){
                         $stmt->bindParam(':userid', $bid->userid, PDO::PARAM_STR);
@@ -153,6 +163,7 @@ class BidDAO {
                         $stmt->bindParam(':status', 'SUCCESSFUL', PDO::PARAM_INT);
                         
                         $stmt->execute();
+                        $numOfSuccess++;
                     }
                     elseif ($bid->amount == $clearingPrice){
                         $stmt->bindParam(':userid', $bid->userid, PDO::PARAM_STR);
@@ -177,6 +188,16 @@ class BidDAO {
 
                     $index++;
                 }
+
+                $sql = "UPDATE bidding_results set size = :size where section = :section and courseid = :courseid";
+
+                $stmt = $conn->prepare($sql);
+                
+                $stmt->bindParam(':size', $numOfSuccess, PDO::PARAM_INT);
+                $stmt->bindParam(':section', $section, PDO::PARAM_STR);
+                $stmt->bindParam(':courseid', $courseid, PDO::PARAM_STR);
+        
+                $stmt->execute();
             }
             else{
                 #n+1 onwards all failed bid
@@ -205,6 +226,16 @@ class BidDAO {
 
                     $index++;
                 }
+
+                $sql = "UPDATE bidding_results set size = :size where section = :section and courseid = :courseid";
+
+                $stmt = $conn->prepare($sql);
+                
+                $stmt->bindParam(':size', 0, PDO::PARAM_INT);
+                $stmt->bindParam(':section', $section, PDO::PARAM_STR);
+                $stmt->bindParam(':courseid', $courseid, PDO::PARAM_STR);
+        
+                $stmt->execute();
             }
         }
 
