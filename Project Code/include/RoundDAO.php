@@ -91,15 +91,15 @@ class RoundDAO {
             $stmt->bindParam(':SECTION', $item[1], PDO::PARAM_STR);
             $stmt->execute();
 
+            $sectionBids = array();
+
             while ($row =$stmt->fetch()){
                 $sectionBids[] = new Bid ($row['userid'],$row['amount'],$row['courseid'],$row['section']);
             }
 
-            echo "sizeof($sectionBids)";
             $bidDAO = new BidDAO();
             $bidDAO->processBID($sectionBids, $item[0], $item[1], 1); #Incomplete function
 
-            $sectionBids = []; 
         }
 
         return $isUpdateOk;
