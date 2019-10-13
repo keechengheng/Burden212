@@ -87,8 +87,8 @@ class StudentDAO {
 	 public function removeAll() {
         $sql = '
             SET FOREIGN_KEY_CHECKS = 0;      
-            TRUNCATE TABLE student
-            SET FOREIGN_KEY_CHECKS = 1;';
+            TRUNCATE TABLE student;
+            SET FOREIGN_KEY_CHECKS = 1';
         
         $connMgr = new ConnectionManager();
         $conn = $connMgr->getConnection();
