@@ -57,10 +57,11 @@ class SectionDAO {
         $stmt->execute();
         
 
-        $sections = array();
+        $sections = [];
         while ($row =$stmt->fetch()){
             array_push($sections, $row['day']);
             array_push($sections, $row['start']);
+            $sections[]= new Section ($row['day'],$row['start']);
         }
         
         return $sections;
