@@ -207,8 +207,6 @@ class BidDAO {
     
                 $stmt = $conn->prepare($sql);
                 $newSize = $size - $numOfSuccess;
-                
-                $newSize = 14;
 
                 $stmt->bindParam(':size', $newSize, PDO::PARAM_INT);
                 $stmt->bindParam(':section', $section, PDO::PARAM_STR);
