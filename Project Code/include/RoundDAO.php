@@ -56,6 +56,7 @@ class RoundDAO {
 
         return $isUpdateOk;
     }
+
     public function closeRoundOne() {
         $sql = "UPDATE `round` SET `roundid`='1', `statusid`='0' WHERE `rowid`='1'";
 
@@ -91,15 +92,26 @@ class RoundDAO {
             $stmt->bindParam(':SECTION', $item[1], PDO::PARAM_STR);
             $stmt->execute();
 
-            $sectionBids = array();
-
             while ($row =$stmt->fetch()){
                 $sectionBids[] = new Bid ($row['userid'],$row['amount'],$row['courseid'],$row['section']);
             }
 
-            $bidDAO = new BidDAO();
-            $bidDAO->processBID($sectionBids, $item[0], $item[1], 1); #Incomplete function
 
+            $bidDAO = new BidDAO();
+            $size = $bidDAO->processBID($sectionBids, $item[0], $item[1], 1); #Incomplete function
+
+            $sql = "UPDATE section set size = :size where section = :section and courseid = :courseid";
+    
+
+            $stmt = $conn->prepare($sql);
+  
+            $stmt->bindParam(':size', $size, PDO::PARAM_INT);
+            $stmt->bindParam(':section', $item[1], PDO::PARAM_STR);
+            $stmt->bindParam(':courseid', $item[0], PDO::PARAM_STR);
+    
+            $stmt->execute();
+            
+            $sectionBids = []; 
         }
 
         return $isUpdateOk;

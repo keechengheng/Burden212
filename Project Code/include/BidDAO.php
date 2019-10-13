@@ -106,6 +106,7 @@ class BidDAO {
         $row = $stmt->fetch();
     
         $size = $row['SIZE'];
+        $newSize = 0;
     
         if( sizeof($sectionBids) <= $size ){
             #update student bids to all success
@@ -130,137 +131,118 @@ class BidDAO {
             }
     
             #NEED TO REDUCE COURSE + SECTION SIZE (USE SQL UPDATE)
-            $sql = "UPDATE bidding_results set size = :size where section = :section and courseid = :courseid";
-    
-            $stmt = $conn->prepare($sql);
             
             $newSize = $size - sizeof($sectionBids);
-    
-            $stmt->bindParam(':size', $newSize, PDO::PARAM_INT);
-            $stmt->bindParam(':section', $section, PDO::PARAM_STR);
-            $stmt->bindParam(':courseid', $courseid, PDO::PARAM_STR);
-    
-            $stmt->execute();
         }
         else{
-            $clearingPrice = $sectionBids[$size-1]->amount;
-            $rejectPrice = $sectionBids[$size]->amount;
-    
-            $sql = "INSERT IGNORE INTO bidding_results (userid, courseid, section, round, datetime, amount, status) VALUES (:userid, :courseid, :section, :round, :datetime, :amount, :status)";
-    
-            $connMgr = new ConnectionManager();      
-            $conn = $connMgr->getConnection();
-            $stmt = $conn->prepare($sql);
-            $now = new DateTime();
-    
-            $stmt->bindParam(':round', $round, PDO::PARAM_INT);
-    
-            if ($clearingPrice == $rejectPrice){
-                #run checking code to see if amount = clearing price in order to drop bid
-                $index = 1;
-                $numOfSuccess = 0;
-                $time = $now->format('Y-m-d H:i:s');
-                foreach ($sectionBids as $bid){
-                    
-                    if($index <= $size && $bid->amount != $clearingPrice){
-    
-                        $status = 'SUCCESSFUL';
-                        $stmt->bindParam(':userid', $bid->userid, PDO::PARAM_STR);
-                        $stmt->bindParam(':courseid', $bid->courseid, PDO::PARAM_STR);
-                        $stmt->bindParam(':section', $bid->section, PDO::PARAM_STR);
-                        $stmt->bindParam(':round', $round, PDO::PARAM_INT);
-                        $stmt->bindParam(':datetime', $time, PDO::PARAM_STR);
-                        $stmt->bindParam(':amount', $bid->amount, PDO::PARAM_INT);
-                        $stmt->bindParam(':status', $status, PDO::PARAM_STR);
-                        
-                        $stmt->execute();
-                        $numOfSuccess++;
-                    }
-                    elseif ($bid->amount == $clearingPrice){
-    
-                        $status = 'DROPPED';
-                        $stmt->bindParam(':userid', $bid->userid, PDO::PARAM_STR);
-                        $stmt->bindParam(':courseid', $bid->courseid, PDO::PARAM_STR);
-                        $stmt->bindParam(':section', $bid->section, PDO::PARAM_STR);
-                        $stmt->bindParam(':datetime', $time, PDO::PARAM_STR);
-                        $stmt->bindParam(':amount', $bid->amount, PDO::PARAM_INT);
-                        $stmt->bindParam(':status', $status, PDO::PARAM_STR);
-                        
-                        $stmt->execute();
-                    }
-                    else{
-                        $status = 'FAILED';
-                        $stmt->bindParam(':userid', $bid->userid, PDO::PARAM_STR);
-                        $stmt->bindParam(':courseid', $bid->courseid, PDO::PARAM_STR);
-                        $stmt->bindParam(':section', $bid->section, PDO::PARAM_STR);
-                        $stmt->bindParam(':datetime', $time, PDO::PARAM_STR);
-                        $stmt->bindParam(':amount', $bid->amount, PDO::PARAM_INT);
-                        $stmt->bindParam(':status', $status, PDO::PARAM_STR);
-                        
-                        $stmt->execute();
-                    }
-    
-                    $index++;
-                }
-    
-                $sql = "UPDATE section set size = :size where section = :section and courseid = :courseid";
-    
-                $stmt = $conn->prepare($sql);
-                $newSize = $size - $numOfSuccess;
 
-                $stmt->bindParam(':size', $newSize, PDO::PARAM_INT);
-                $stmt->bindParam(':section', $section, PDO::PARAM_STR);
-                $stmt->bindParam(':courseid', $courseid, PDO::PARAM_STR);
+            if ( $round == 1){
+                $clearingPrice = $sectionBids[$size-1]->amount;
+                $rejectPrice = $sectionBids[$size]->amount;
         
-                $stmt->execute();
+                $sql = "INSERT IGNORE INTO bidding_results (userid, courseid, section, round, datetime, amount, status) VALUES (:userid, :courseid, :section, :round, :datetime, :amount, :status)";
+        
+                $connMgr = new ConnectionManager();      
+                $conn = $connMgr->getConnection();
+                $stmt = $conn->prepare($sql);
+                $now = new DateTime();
+        
+                $stmt->bindParam(':round', $round, PDO::PARAM_INT);
+        
+                if ($clearingPrice == $rejectPrice){
+                    #run checking code to see if amount = clearing price in order to drop bid
+                    $index = 1;
+                    $numOfSuccess = 0;
+                    $time = $now->format('Y-m-d H:i:s');
+                    foreach ($sectionBids as $bid){
+                        
+                        if($index <= $size && $bid->amount != $clearingPrice){
+        
+                            $status = 'SUCCESSFUL';
+                            $stmt->bindParam(':userid', $bid->userid, PDO::PARAM_STR);
+                            $stmt->bindParam(':courseid', $bid->courseid, PDO::PARAM_STR);
+                            $stmt->bindParam(':section', $bid->section, PDO::PARAM_STR);
+                            $stmt->bindParam(':round', $round, PDO::PARAM_INT);
+                            $stmt->bindParam(':datetime', $time, PDO::PARAM_STR);
+                            $stmt->bindParam(':amount', $bid->amount, PDO::PARAM_INT);
+                            $stmt->bindParam(':status', $status, PDO::PARAM_STR);
+                            
+                            $stmt->execute();
+                            $numOfSuccess++;
+                        }
+                        elseif ($bid->amount == $clearingPrice){
+        
+                            $status = 'DROPPED';
+                            $stmt->bindParam(':userid', $bid->userid, PDO::PARAM_STR);
+                            $stmt->bindParam(':courseid', $bid->courseid, PDO::PARAM_STR);
+                            $stmt->bindParam(':section', $bid->section, PDO::PARAM_STR);
+                            $stmt->bindParam(':datetime', $time, PDO::PARAM_STR);
+                            $stmt->bindParam(':amount', $bid->amount, PDO::PARAM_INT);
+                            $stmt->bindParam(':status', $status, PDO::PARAM_STR);
+                            
+                            $stmt->execute();
+                        }
+                        else{
+                            $status = 'FAILED';
+                            $stmt->bindParam(':userid', $bid->userid, PDO::PARAM_STR);
+                            $stmt->bindParam(':courseid', $bid->courseid, PDO::PARAM_STR);
+                            $stmt->bindParam(':section', $bid->section, PDO::PARAM_STR);
+                            $stmt->bindParam(':datetime', $time, PDO::PARAM_STR);
+                            $stmt->bindParam(':amount', $bid->amount, PDO::PARAM_INT);
+                            $stmt->bindParam(':status', $status, PDO::PARAM_STR);
+                            
+                            $stmt->execute();
+                        }
+        
+                        $index++;
+                    }
+        
+                    $newSize = $size - $numOfSuccess;
+                }
+                else{
+                    #n+1 onwards all failed bid
+                    $index = 1;
+                    $time = $now->format('Y-m-d H:i:s');
+                    foreach ($sectionBids as $bid) {
+                        if ($index <= $size){
+                            $status = 'SUCCESSFUL';
+                            $stmt->bindParam(':userid', $bid->userid, PDO::PARAM_STR);
+                            $stmt->bindParam(':courseid', $bid->courseid, PDO::PARAM_STR);
+                            $stmt->bindParam(':section', $bid->section, PDO::PARAM_STR);
+                            $stmt->bindParam(':datetime', $time, PDO::PARAM_STR);
+                            $stmt->bindParam(':amount', $bid->amount, PDO::PARAM_INT);
+                            $stmt->bindParam(':status', $status , PDO::PARAM_STR);
+                            
+                            $stmt->execute();
+                        }
+                        else{
+                            $status = 'FAILED';
+                            $stmt->bindParam(':userid', $bid->userid, PDO::PARAM_STR);
+                            $stmt->bindParam(':courseid', $bid->courseid, PDO::PARAM_STR);
+                            $stmt->bindParam(':section', $bid->section, PDO::PARAM_STR);
+                            $stmt->bindParam(':datetime', $time, PDO::PARAM_STR);
+                            $stmt->bindParam(':amount', $bid->amount, PDO::PARAM_INT);
+                            $stmt->bindParam(':status', $status, PDO::PARAM_STR);
+                            
+                            $stmt->execute();
+                        }
+        
+                        $index++;
+                    }
+                }
             }
             else{
-                #n+1 onwards all failed bid
-                $index = 1;
-                $time = $now->format('Y-m-d H:i:s');
-                foreach ($sectionBids as $bid) {
-                    if ($index <= $size){
-                        $status = 'SUCCESSFUL';
-                        $stmt->bindParam(':userid', $bid->userid, PDO::PARAM_STR);
-                        $stmt->bindParam(':courseid', $bid->courseid, PDO::PARAM_STR);
-                        $stmt->bindParam(':section', $bid->section, PDO::PARAM_STR);
-                        $stmt->bindParam(':datetime', $time, PDO::PARAM_STR);
-                        $stmt->bindParam(':amount', $bid->amount, PDO::PARAM_INT);
-                        $stmt->bindParam(':status', $status , PDO::PARAM_STR);
-                        
-                        $stmt->execute();
-                    }
-                    else{
-                        $status = 'FAILED';
-                        $stmt->bindParam(':userid', $bid->userid, PDO::PARAM_STR);
-                        $stmt->bindParam(':courseid', $bid->courseid, PDO::PARAM_STR);
-                        $stmt->bindParam(':section', $bid->section, PDO::PARAM_STR);
-                        $stmt->bindParam(':datetime', $time, PDO::PARAM_STR);
-                        $stmt->bindParam(':amount', $bid->amount, PDO::PARAM_INT);
-                        $stmt->bindParam(':status', $status, PDO::PARAM_STR);
-                        
-                        $stmt->execute();
-                    }
-    
-                    $index++;
-                }
-    
-                $sql = "UPDATE section set size = :size where section = :section and courseid = :courseid";
-    
-                $stmt = $conn->prepare($sql);
-                $newSize = 0;
-                $stmt->bindParam(':size', $newSize, PDO::PARAM_INT);
-                $stmt->bindParam(':section', $section, PDO::PARAM_STR);
-                $stmt->bindParam(':courseid', $courseid, PDO::PARAM_STR);
-        
-                $stmt->execute();
+                
             }
+
         }
     
         #Truncate bids table
         $sql = "TRUNCATE TABLE BID";
         $stmt = $conn->prepare($sql);
         $stmt->execute();
+
+        return $newSize;
     }
     
     
