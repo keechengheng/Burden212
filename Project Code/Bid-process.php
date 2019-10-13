@@ -12,11 +12,11 @@ function insertManualBid()
 {
     $BidDAO = new BidDAO();
     $CourseDAO = new CourseDAO();
-    $roundDAO = new RoundDAO();
     $StudentDAO = new StudentDAO();
     $PrerequisiteDAO = new PrerequisiteDAO();
     $SectionDAO = new SectionDAO();
     $CourseCompletedDAO = new CourseCompletedDAO();
+    $roundDAO = new RoundDAO();
     $round = $roundDAO ->retrieveRound();
    
     $encountered_Error = array();
@@ -34,7 +34,7 @@ function insertManualBid()
             array_push ($encountered_Error['message'],'invalid amount');
         }
 
-        //check invalid course - ensure course table is above bid
+        //check invalid course 
         if (($CourseDAO -> retrieveCourse($courseid))==false ){
             array_push ($encountered_Error['message'],'invalid course');
         }
@@ -167,6 +167,11 @@ function insertManualBid()
 function dropManualBid()
 {
     $BidDAO = new BidDAO();
+    $CourseDAO = new CourseDAO();
+    $SectionDAO = new SectionDAO();
+    $roundDAO = new RoundDAO();
+    $round = $roundDAO ->retrieveRound();
+    $encountered_Error = array();
     
     $courseid = $_POST['courseid'];
     $section = $_POST['section'];
@@ -174,9 +179,34 @@ function dropManualBid()
     $amount = "";
 
     if (isset($_POST['courseid']) && isset($_POST['section'])){
-        $newBid = new Bid($user,$amount,$courseid,$section);
-        $BidDAO->drop($newBid);
-        header("Location: ViewBid.php");
+        if ($round[1]=="1"){
+            //check invalid course 
+            if (($BidDAO ->checkForSimilarCourseBid($user,$courseid))==false){
+                array_push ($encountered_Error['message'],'invalid course');
+            }
+            else
+            {    
+                //check invalid section 
+                if(!in_array($section, $SectionDAO->retrieveByCourse($courseid)))
+                {
+                    array_push ($encountered_Error['message'],'invalid section');
+                }
+            }
+        }
+        else{
+            array_push ($encountered_Error['message'],'round ended');
+        }
+        if (isEmpty($encountered_Error['message'])){
+            $newBid = new Bid($user,$amount,$courseid,$section);
+            $BidDAO->drop($newBid);
+            header("Location: ViewBid.php");
+            }
+            else{
+                $errors = $encountered_Error;
+                var_dump ($errors);
+            }
+
+        
     }
 
 }
