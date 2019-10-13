@@ -7,24 +7,21 @@ if(!isset($_SESSION['userid'])){
     return;
 }
 
-$trigger = $_SESSION['trigger'];
-
-$BidDAO = new BidDAO();
-$CourseDAO = new CourseDAO();
-$roundDAO = new RoundDAO();
-$StudentDAO = new StudentDAO();
-$PrerequisiteDAO = new PrerequisiteDAO();
-$SectionDAO = new SectionDAO();
-$CourseCompletedDAO = new CourseCompletedDAO();
-
-$round = $roundDAO ->retrieveRound();
-$user = $_SESSION['userid'];
-$encountered_Error = array();
-$encountered_Error['message'] = array();
-
-
-if ($trigger == "insert")
+function insertManualBid()
 {
+    $BidDAO = new BidDAO();
+    $CourseDAO = new CourseDAO();
+    $roundDAO = new RoundDAO();
+    $StudentDAO = new StudentDAO();
+    $PrerequisiteDAO = new PrerequisiteDAO();
+    $SectionDAO = new SectionDAO();
+    $CourseCompletedDAO = new CourseCompletedDAO();
+
+    $round = $roundDAO ->retrieveRound();
+    $user = $_SESSION['userid'];
+    $encountered_Error = array();
+    $encountered_Error['message'] = array();
+
     $courseid = $_POST['courseid'];
     $section = $_POST['section'];
     $amount = $_POST['amount'];
@@ -165,16 +162,9 @@ if ($trigger == "insert")
             $errors = $encountered_Error;
             var_dump($errors);
         }
-
-
-
     }
 }
-
-if ($trigger == "drop")
-{
-    
-}
+insertManualBid();
 
 ?>
 
