@@ -26,14 +26,14 @@ class SectionDAO {
         return $isAddOK;
     }
 
-    public function retrieveByCourse($section) {
+    public function retrieveByCourse($course) {
         $sql = "select section from section where courseid=:course";
 
         $connMgr = new ConnectionManager();      
         $conn = $connMgr->getConnection();
         $stmt = $conn->prepare($sql);
         $stmt->setFetchMode(PDO::FETCH_ASSOC);
-        $stmt->bindParam(':course', $section, PDO::PARAM_STR);
+        $stmt->bindParam(':course', $course, PDO::PARAM_STR);
         $stmt->execute();
         
 

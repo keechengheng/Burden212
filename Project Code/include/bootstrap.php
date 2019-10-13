@@ -671,7 +671,7 @@ function doBootstrap() {
 					}
 
 					//"section limit reached"
-					if (count($BidDAO->retrieveBids($data[0]))>5)
+					if (count($BidDAO->retrieveBids($data[0]))>=5)
 					{
 						array_push ($encountered_Error['message'],'section limit reached');
 					}

@@ -40,7 +40,7 @@ $results = $dao->retrieveAll();
                         <td>$section->venue</td>
                         <td>$section->size</td>
                     </tr>
-                    "; //<td><a href='bid.php?name=$section->name'>Bid</a></td>
+                    ";
                     
                 }
         ?>  
@@ -48,7 +48,7 @@ $results = $dao->retrieveAll();
 
         <h1>Insert Bid </h1>
 
-        <form action="BidProcess.php">
+        <form method="POST" action="Bid-process.php">
         <table border="1">
             <tr>
                 <th>Course</th>

@@ -24,6 +24,19 @@ class CourseDAO {
 
         return $isAddOK;
     }
+
+    public function retrieveCourse($course) {
+        $sql = "select * from course where courseid=:course";
+
+        $connMgr = new ConnectionManager();      
+        $conn = $connMgr->getConnection();
+        $stmt = $conn->prepare($sql);
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+        $stmt->bindParam(':course', $course, PDO::PARAM_STR);
+        $stmt->execute();
+        
+        return $stmt->rowCount();
+    }
     
     public  function retrieveSchool($course) {
         $sql = 'select school from course where courseid=:courseid';

@@ -40,7 +40,26 @@ $results = $dao->retrieveBids($student);
         
         </table>
         <br/>
-        <br/>
+        <h1>Drop Bid </h1>
+
+        <form action="BidProcess.php">
+        <table border="1">
+            <tr>
+                <th>Course</th>
+                <th>Section</th>
+               
+            </tr>
+            <tr>
+                <td><input type="text" name="courseid"></td>
+                <td><input type="text" name="section"></td>
+            
+            </tr>
+            <tr>
+                <td colspan="3"><input type="submit" name="cancel"value="Cancel" style="float: right;"/>
+                <input type="submit" name="submit" value="Submit" style="float: right;"/></td>
+            </tr>
+        </table>
+        </br>
         <a href='StudentPage.php'>Return to home!</a>
     </body>
 </html>
