@@ -138,7 +138,7 @@ function insertManualBid()
                 if ($retrieveUser->edollar < ($currentAmountSpent + $amount - $previousBid)){
                     array_push ($encountered_Error['message'],'not enough e-dollar');
                     $errors = $encountered_Error;
-                    var_dump($errors);
+                    echo ($errors);
                 }
                 else{
                     //update with new bid amount + new section
@@ -149,18 +149,19 @@ function insertManualBid()
                 if ($retrieveUser->edollar < ($currentAmountSpent + $amount)){
                     array_push ($encountered_Error['message'],'not enough e-dollar');
                     $errors = $encountered_Error;
-                    var_dump($errors);
+                    echo ($errors);
                 }
                 else{
                     //update with new bid amount
                     $newBid = new Bid($user,$amount,$courseid,$section);
                     $BidDAO->add( $newBid );
+                    header("Location: ViewBid.php");
                 }
             }
         }
         else{
             $errors = $encountered_Error;
-            var_dump($errors);
+            echo ($errors);
         }
     }
 }

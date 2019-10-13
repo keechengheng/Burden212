@@ -39,6 +39,7 @@ $results = $dao->retrieveBids($student);
 ?>
         
         </table>
+        <a href='ManageBids.php'>Make a Bid!</a>
         <br/>
         <h1>Drop Bid </h1>
 
