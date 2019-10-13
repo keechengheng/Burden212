@@ -10,14 +10,14 @@ class Student {
     
     public function __construct($username='', $password='', $name='', $school='', $edollar='') {
         $this->userid = $username;
-        $this->password = password_hash($password, PASSWORD_DEFAULT);
+        $this->password = $password;
         $this->name = $name;
         $this->school = $school;
         $this->edollar = $edollar;
     }
     
     public function authenticate($enteredPwd) {
-        return password_verify ($enteredPwd, $this->password);
+        return $enteredPwd === $this->password;
     }
 
     public function adminLogin($enteredPwd) {
