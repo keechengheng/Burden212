@@ -138,7 +138,7 @@ function insertManualBid()
                 if ($retrieveUser->edollar < ($currentAmountSpent + $amount - $previousBid)){
                     array_push ($encountered_Error['message'],'not enough e-dollar');
                     $errors = $encountered_Error;
-                    echo ($errors);
+                    var_dump ($errors);
                 }
                 else{
                     //update with new bid amount + new section
@@ -149,7 +149,7 @@ function insertManualBid()
                 if ($retrieveUser->edollar < ($currentAmountSpent + $amount)){
                     array_push ($encountered_Error['message'],'not enough e-dollar');
                     $errors = $encountered_Error;
-                    echo ($errors);
+                    var_dump ($errors);
                 }
                 else{
                     //update with new bid amount
@@ -161,7 +161,7 @@ function insertManualBid()
         }
         else{
             $errors = $encountered_Error;
-            echo ($errors);
+            var_dump ($errors);
         }
     }
 }
