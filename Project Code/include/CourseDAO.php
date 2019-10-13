@@ -37,14 +37,14 @@ class CourseDAO {
         $stmt->execute();
 
 
-        while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        while($row = $stmt->fetch()) {
             return $value = $row['school'];
           }
     }
 
 
     public  function retrieveExam($course) {
-        $sql = 'select exam_date,exam_start from course where courseid=:courseid';
+        $sql = 'select * from course where courseid=:courseid';
         
         $connMgr = new ConnectionManager();
         $conn = $connMgr->getConnection();
@@ -55,13 +55,10 @@ class CourseDAO {
         $stmt->execute();
 
 
-        $exams = array();
         while ($row =$stmt->fetch()){
-            array_push($exams, $row['exam_date']);
-            array_push($exams, $row['exam_start']);
+            return new Course ($row['courseid'],$row['school'], $row['title'],$row['description'],$row['exam_date'],$row['exam_start'],$row['exam_end']);
         }
-        
-        return $exams;
+
     }
 	
 	 public function removeAll() {

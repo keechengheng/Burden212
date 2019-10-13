@@ -56,13 +56,10 @@ class SectionDAO {
         $stmt->bindParam(':section', $section, PDO::PARAM_STR);
         $stmt->execute();
         
-
-        $sections = [];
-        
         while ($row =$stmt->fetch()){
-            $sections[]= new Section ($row['courseid'],$row['section'], $row['day'],$row['start'],$row['end'],$row['instructor'],$row['venue'],$row['size']);
+            return new Section ($row['courseid'],$row['section'], $row['day'],$row['start'],$row['end'],$row['instructor'],$row['venue'],$row['size']);
         }
-        return $sections;
+
     }
 	
 	 public function removeAll() {

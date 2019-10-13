@@ -621,7 +621,7 @@ function doBootstrap() {
 							$biddedSection = $SectionDAO ->retrieveByCourseSection($element->courseid,$element->section);
 							//retrieve day and start time base on section and course
 							$retrieveSection = $SectionDAO ->retrieveByCourseSection($data[2],$data[3]);
-							if($biddedSection->day == $retrieveSection->day && $biddedSection->start == $retrieveSection->start){
+							if(($biddedSection->day == $retrieveSection->day) && ($biddedSection->start == $retrieveSection->start)){
 							//it clashes
 							array_push ($encountered_Error['message'],'class timetable clash');
 							}
@@ -633,7 +633,7 @@ function doBootstrap() {
 							$biddedExam = $CourseDAO ->retrieveExam($element->courseid);
 							//retrieve day and start time base on section and course
 							$retrieveExam = $CourseDAO ->retrieveExam($data[2]);
-							if($biddedSection->exam_date == $retrieveSection->exam_date && $biddedSection->exam_start == $retrieveSection->exam_start){
+							if(($biddedExam->exam_date == $retrieveExam->exam_date) && ($biddedExam->exam_start == $retrieveExam->exam_start)){
 							//it clashes
 							array_push ($encountered_Error['message'],'exam timetable clash');
 							}
