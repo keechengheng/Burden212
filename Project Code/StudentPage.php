@@ -15,18 +15,39 @@ else{
     $roundDAO = new RoundDAO();
     $round = $roundDAO ->retrieveRound();
     $_SESSION['round'] = $round;
+    $_SESSION['status'] = $round[1];
 
     if ($round[0] == "0")
     {
         $message="The system is currently not open for bidding.";
+        $statusMessage = 'Closed';
+        $roundNumber = "0";
     }
     if ($round[0] == "1")
     {
-        $message="The system is currently on Round 1 of bidding.";
+        $roundNumber = "1";
+        if  ($round[1]=="0"){
+            $message="The system is currently closed and processing Round 1 bidding results.";
+            $statusMessage = 'Closed';
+            
+        }
+        else{
+            $message="The system is currently opened for Round 1 of bidding.";
+            $statusMessage = 'Open';
+        }
+        
     }
     if ($round[0] == "2")
     {
-        $message="The system is currently on Round 2 of bidding.";
+        $roundNumber = "2";
+        if  ($round[1]=="0"){
+            $message="The system is currently closed and processing Round 2 bidding results.";
+            $statusMessage = "Closed";
+        }
+        else{
+            $message="The system is currently opened for Round 2 of bidding.";
+            $statusMessage = "Open";
+        }
     }
 
     $BidDAO = new BidDAO();
@@ -42,8 +63,12 @@ else{
 <body>
     <h1>Hello <?= $user->name ?> from <?= $user->school ?>, welcome back!</h1> 
     <h3>You have <?= $user->edollar ?> credits left. What would you like to do? </h3>    
-    <h3>You have reserved <?= $currentAmountSpent ?> credits for this bidding round. </h3>
+    <h3>You will be using <?= $currentAmountSpent ?> credits for this bidding round. </h3>
     <h3><?= $message ?>  </h3>
+    </br>
+    <h2> Round: <?= $roundNumber ?></h2>
+    <h2> Status: <?= $statusMessage ?></h2>
+    <br/>
 
     <h1>
         <a href='ManageBids.php'>Bid for Mods!</a>
