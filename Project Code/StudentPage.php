@@ -29,7 +29,6 @@ else{
         if  ($round[1]=="0"){
             $message="The system is currently closed and processing Round 1 bidding results.";
             $statusMessage = 'Closed';
-            
         }
         else{
             $message="The system is currently opened for Round 1 of bidding.";
@@ -50,14 +49,17 @@ else{
         }
     }
 
-    $BidDAO = new BidDAO();
-    $retrieveBids = $BidDAO->retrieveBids($user->userid); //retrieve previous confirmed bids
+    $BiddingResultsDAO = new BiddingResultsDAO();
+    $retrieveBids = $BiddingResultsDAO->retrieveBids($user); //retrieve previous confirmed bids
     $currentAmountSpent = 0;
 
     foreach($retrieveBids as $element){
         //calculate total Amount Spent
         $currentAmountSpent = $currentAmountSpent + $element->amount;
     }
+
+    
+
 ?>
 <html>
 <body>
@@ -69,6 +71,33 @@ else{
     <h2> Round: <?= $roundNumber ?></h2>
     <h2> Status: <?= $statusMessage ?></h2>
     <br/>
+    <table border="1">
+            <tr>
+                <th>S/N</th>
+                <th>Course</th>
+                <th>Section</th>
+                <th>Amount</th>
+                <th>Status</th> 
+                <th>Drop</th>    
+            </tr>
+<?php            
+        for ($i = 1; $i <= count($retrieveBids); $i++) {
+            $bid = $retrieveBids[$i-1];
+            echo "
+            <tr>
+                <td>$i</td>
+                <td>$bid->courseid</td>
+                <td>$bid->section</td>
+                <td>$bid->amount</td>
+                <td>$bid->status</td>
+                <td>Drop</td>
+            </tr>
+            "; 
+            
+        }
+?>
+        
+        </table>
 
     <h1>
         <a href='ManageBids.php'>Bid for Mods!</a>
