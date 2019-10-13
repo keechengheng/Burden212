@@ -614,8 +614,6 @@ function doBootstrap() {
 					if ($round[0]=="1"){
 						$studentObj = $StudentDAO->retrieve($data[0]);
 						$courseObj = $CourseDAO->retrieveSchool($data[2]);
-						var_dump($studentObj);
-						var_dump($courseObj);
 						if ($studentObj->school != $courseObj){
 							array_push ($encountered_Error['message'],'not own school course');
 						}
