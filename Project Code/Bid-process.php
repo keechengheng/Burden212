@@ -172,6 +172,7 @@ function dropManualBid()
     $roundDAO = new RoundDAO();
     $round = $roundDAO ->retrieveRound();
     $encountered_Error = array();
+    $encountered_Error['message'] = array();
     
     $courseid = $_POST['courseid'];
     $section = $_POST['section'];
@@ -199,12 +200,11 @@ function dropManualBid()
         if (isEmpty($encountered_Error['message'])){
             $newBid = new Bid($user,$amount,$courseid,$section);
             $BidDAO->drop($newBid);
-            header("Location: ViewBid.php");
             }
             else{
                 $errors = $encountered_Error;
                 var_dump ($errors);
-            }
+            }   
 
         
     }
