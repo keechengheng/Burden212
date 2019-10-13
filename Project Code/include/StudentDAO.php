@@ -44,8 +44,6 @@ class StudentDAO {
         $connMgr = new ConnectionManager();      
         $conn = $connMgr->getConnection();
         $stmt = $conn->prepare($sql);
-        
-        $user->password = password_hash($user->password,PASSWORD_DEFAULT);
 
         $stmt->bindParam(':userid', $user->userid, PDO::PARAM_STR);
         $stmt->bindParam(':password', $user->password, PDO::PARAM_STR);

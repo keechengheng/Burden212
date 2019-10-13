@@ -7,7 +7,7 @@ class ConnectionManager {
         
         $host = "localhost";
         $username = "root";
-        $password = "root";  
+        $password = "";  
         $dbname = "SPM_Proj_2019";
         $port = 3306;    
 
