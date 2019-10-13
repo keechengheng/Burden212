@@ -50,7 +50,7 @@ else{
     }
 
     $BiddingResultsDAO = new BiddingResultsDAO();
-    $retrieveBids = $BiddingResultsDAO->retrieveBids($user); //retrieve previous confirmed bids
+    $retrieveBids = $BiddingResultsDAO->retrieveBids($user->userid); //retrieve previous confirmed bids
     $currentAmountSpent = 0;
 
     foreach($retrieveBids as $element){
