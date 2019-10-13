@@ -8,7 +8,7 @@ $results = $dao->retrieveBids($student);
 $_SESSION['trigger'] = "Drop";
 $currentAmountSpent = 0;
 
-    foreach($retrieveBids as $element){
+    foreach($results as $element){
         //calculate total Amount Spent
         $currentAmountSpent = $currentAmountSpent + $element->amount;
     }
