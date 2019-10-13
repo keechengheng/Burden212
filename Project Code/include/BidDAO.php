@@ -116,6 +116,7 @@ class BidDAO {
             $conn = $connMgr->getConnection();
             $stmt = $conn->prepare($sql);
             $now = new DateTime();
+            $time = $now->format('Y-m-d H:i:s');
             $status = 'SUCCESSFUL';
     
             foreach ($sectionBids as $bid){
@@ -123,7 +124,7 @@ class BidDAO {
                 $stmt->bindParam(':courseid', $bid->courseid, PDO::PARAM_STR);
                 $stmt->bindParam(':section', $bid->section, PDO::PARAM_STR);
                 $stmt->bindParam(':round', $round, PDO::PARAM_INT);
-                $stmt->bindParam(':datetime', $now->format('Y-m-d H:i:s'), PDO::PARAM_STR);
+                $stmt->bindParam(':datetime', $time, PDO::PARAM_STR);
                 $stmt->bindParam(':amount', $bid->amount, PDO::PARAM_INT);
                 $stmt->bindParam(':status', $status, PDO::PARAM_STR);
                 
