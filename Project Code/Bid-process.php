@@ -15,6 +15,7 @@ $roundDAO = new RoundDAO();
 $StudentDAO = new StudentDAO();
 $PrerequisiteDAO = new PrerequisiteDAO();
 $SectionDAO = new SectionDAO();
+$CourseCompletedDAO = new CourseCompletedDAO();
 
 $round = $roundDAO ->retrieveRound();
 $user = $_SESSION['userid'];
@@ -140,6 +141,7 @@ if ($trigger == "insert")
                 if ($retrieveUser->edollar < ($currentAmountSpent + $amount - $previousBid)){
                     array_push ($encountered_Error['message'],'not enough e-dollar');
                     $errors = $encountered_Error;
+                    var_dump($errors);
                 }
                 else{
                     //update with new bid amount + new section
@@ -150,6 +152,7 @@ if ($trigger == "insert")
                 if ($retrieveUser->edollar < ($currentAmountSpent + $amount)){
                     array_push ($encountered_Error['message'],'not enough e-dollar');
                     $errors = $encountered_Error;
+                    var_dump($errors);
                 }
                 else{
                     //update with new bid amount
@@ -160,6 +163,7 @@ if ($trigger == "insert")
         }
         else{
             $errors = $encountered_Error;
+            var_dump($errors);
         }
 
 
