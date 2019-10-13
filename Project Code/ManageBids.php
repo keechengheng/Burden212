@@ -4,6 +4,8 @@ require_once 'include/common.php';
 
 $dao = new SectionDAO();
 $results = $dao->retrieveAll();
+
+$_SESSION['trigger'] = "insert";
    
 ?>
 

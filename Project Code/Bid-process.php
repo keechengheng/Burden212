@@ -14,6 +14,7 @@ $CourseDAO = new CourseDAO();
 $roundDAO = new RoundDAO();
 $StudentDAO = new StudentDAO();
 $PrerequisiteDAO = new PrerequisiteDAO();
+$SectionDAO = new SectionDAO();
 
 $round = $roundDAO ->retrieveRound();
 $user = $_SESSION['userid'];
