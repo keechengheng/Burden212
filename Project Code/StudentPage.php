@@ -77,8 +77,7 @@ else{
                 <th>Course</th>
                 <th>Section</th>
                 <th>Amount</th>
-                <th>Status</th> 
-                <th>Drop</th>    
+                <th>Status</th>  
             </tr>
 <?php            
         for ($i = 1; $i <= count($retrieveBids); $i++) {
@@ -90,7 +89,6 @@ else{
                 <td>$bid->section</td>
                 <td>$bid->amount</td>
                 <td>$bid->status</td>
-                <td>Drop</td>
             </tr>
             "; 
             
