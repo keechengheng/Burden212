@@ -6,6 +6,10 @@ if(!isset($_SESSION['userid'])){
     header("Location: Login.php?error=Unauthorized Access");
     return;
 }
+    
+    
+function insertManualBid()
+{
     $BidDAO = new BidDAO();
     $CourseDAO = new CourseDAO();
     $roundDAO = new RoundDAO();
@@ -13,15 +17,11 @@ if(!isset($_SESSION['userid'])){
     $PrerequisiteDAO = new PrerequisiteDAO();
     $SectionDAO = new SectionDAO();
     $CourseCompletedDAO = new CourseCompletedDAO();
-    $user = $_SESSION['userid'];
-function insertManualBid()
-{
-   
     $round = $roundDAO ->retrieveRound();
    
     $encountered_Error = array();
     $encountered_Error['message'] = array();
-
+    $user = $_SESSION['userid'];
     $courseid = $_POST['courseid'];
     $section = $_POST['section'];
     $amount = $_POST['amount'];
@@ -166,9 +166,11 @@ function insertManualBid()
 }
 function dropManualBid()
 {
-
+    $BidDAO = new BidDAO();
+    
     $courseid = $_POST['courseid'];
     $section = $_POST['section'];
+    $user = $_SESSION['userid'];
     $amount = "";
 
     if (isset($_POST['courseid']) && isset($_POST['section'])){
