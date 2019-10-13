@@ -50,7 +50,7 @@ $currentAmountSpent = 0;
         <br/>
         <h1>Drop Bid </h1>
 
-        <form action="BidProcess.php">
+        <form action="Bid-process.php">
         <table border="1">
             <tr>
                 <th>Course</th>
