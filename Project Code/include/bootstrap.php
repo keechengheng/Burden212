@@ -136,6 +136,10 @@ function doBootstrap() {
 				$StudentDAO -> removeAll();
 
 				
+				//trigger round 1 to begin
+				$roundDAO = new RoundDAO();
+				$roundDAO ->activateRoundOne();
+
 				# then read each csv file line by line (remember to skip the header)
 				# $data = fgetcsv($file) gets you the next line of the CSV file which will be stored 
 				# in the array $data
@@ -604,10 +608,14 @@ function doBootstrap() {
 					//LOGIC Validations (7)
 					$retrieveBids = $BidDAO->retrieveBids($data[0]); //retrieve previous confirmed bids
 
+					$roundDAO = new RoundDAO();
+					$round = $roundDAO ->retrieveRound();
 					//"not own school course"
-					if ($_SESSION['round']=="0"){
+					if ($round[0]=="1"){
 						$studentObj = $StudentDAO->retrieve($data[0]);
 						$courseObj = $CourseDAO->retrieveSchool($data[2]);
+						var_dump($studentObj);
+						var_dump($courseObj);
 						if ($studentObj->school != $courseObj){
 							array_push ($encountered_Error['message'],'not own school course');
 						}
@@ -780,7 +788,4 @@ function doBootstrap() {
 	
 }
 
-//trigger round 1 to begin
-$roundDAO = new RoundDAO();
-$roundDAO ->activateRoundOne();
 ?>
