@@ -5,6 +5,13 @@ require_once 'include/common.php';
 $student = $_SESSION['userid'];
 $dao = new BidDAO();
 $results = $dao->retrieveBids($student);
+$_SESSION['trigger'] = "Drop";
+$currentAmountSpent = 0;
+
+    foreach($retrieveBids as $element){
+        //calculate total Amount Spent
+        $currentAmountSpent = $currentAmountSpent + $element->amount;
+    }
    
 ?>
 
@@ -13,7 +20,7 @@ $results = $dao->retrieveBids($student);
     </head>
     <body>
         <h1>Current Bids for <?= $student ?></h1>
-
+        <h3>You will be using <?= $currentAmountSpent ?> credits for this bidding round. </h3>
         <table border="1">
             <tr>
                 <th>S/N</th>

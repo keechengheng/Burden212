@@ -6,10 +6,6 @@ if(!isset($_SESSION['userid'])){
     header("Location: Login.php?error=Unauthorized Access");
     return;
 }
-
-function insertManualBid()
-{
-   
     $BidDAO = new BidDAO();
     $CourseDAO = new CourseDAO();
     $roundDAO = new RoundDAO();
@@ -17,7 +13,9 @@ function insertManualBid()
     $PrerequisiteDAO = new PrerequisiteDAO();
     $SectionDAO = new SectionDAO();
     $CourseCompletedDAO = new CourseCompletedDAO();
-
+function insertManualBid()
+{
+   
     $round = $roundDAO ->retrieveRound();
     $user = $_SESSION['userid'];
     $encountered_Error = array();
@@ -165,7 +163,27 @@ function insertManualBid()
         }
     }
 }
-insertManualBid();
+function dropManualBid()
+{
+
+    $courseid = $_POST['courseid'];
+    $section = $_POST['section'];
+    $amount = "";
+
+    if (isset($_POST['courseid']) && isset($_POST['section'])){
+        $newBid = new Bid($user,$amount,$courseid,$section);
+        $BidDAO->drop($newBid);
+        header("Location: ViewBid.php");
+    }
+
+}
+if ($_SESSION['trigger'] == "Insert"){
+    insertManualBid();
+}
+if ($_SESSION['trigger'] == "Drop"){
+    dropManualBid();
+}
+
 
 ?>
 

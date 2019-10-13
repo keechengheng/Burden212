@@ -22,6 +22,25 @@ class BidDAO {
         return $isAddOK;
     }
 
+    public function drop($bid) {
+        $sql = "DELETE IGNORE FROM bid WHERE (userid:userid, courseid:courseid, section:section)";
+
+        $connMgr = new ConnectionManager();      
+        $conn = $connMgr->getConnection();
+        $stmt = $conn->prepare($sql);
+        
+        $stmt->bindParam(':userid', $bid->userid, PDO::PARAM_STR);
+        $stmt->bindParam(':courseid', $bid->courseid, PDO::PARAM_STR);
+        $stmt->bindParam(':section', $bid->section, PDO::PARAM_STR);
+
+        $isAddOK = False;
+        if ($stmt->execute()) {
+            $isAddOK = True;
+        }
+
+        return $isAddOK;
+    }
+
     public function update($userid, $courseid, $amount,$section) {
         $sql = "UPDATE bid set amount=:amount, section=:section where userid=:userid and courseid=:courseid";
 
