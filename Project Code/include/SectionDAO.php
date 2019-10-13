@@ -71,17 +71,9 @@ class SectionDAO {
         $connMgr = new ConnectionManager();
         $conn = $connMgr->getConnection();
         
-        $sql = 'SET FOREIGN_KEY_CHECKS = 0';
-        $stmt = $conn->prepare($sql);
-        
-        $stmt->execute();
-
-        $sql = 'TRUNCATE TABLE section';
-        $stmt = $conn->prepare($sql);
-        
-        $stmt->execute();
-
-        $sql = 'SET FOREIGN_KEY_CHECKS = 1 ';
+        $sql = 'SET FOREIGN_KEY_CHECKS = 0;
+                TRUNCATE TABLE section;
+                SET FOREIGN_KEY_CHECKS = 1';
         $stmt = $conn->prepare($sql);
         
         $stmt->execute();
