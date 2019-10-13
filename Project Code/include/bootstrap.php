@@ -33,10 +33,6 @@ function validateEndTime($startTime,$endTime)
 	}
 }
 
-//trigger round 1 to begin
-$roundDAO = new RoundDAO();
-$roundDAO ->activateRoundOne();
-
 function doBootstrap() {
 	
 	
@@ -81,34 +77,34 @@ function doBootstrap() {
 			$section = @fopen($section_path, "r");
 			$student = @fopen($student_path, "r");
 
-			if (empty($bid) || empty($course_completed) || empty($course) || empty($prerequisite) || empty($section) || empty($student)){
+			if (isEmpty($bid) || isEmpty($course_completed) || isEmpty($course) || isEmpty($prerequisite) || isEmpty($section) || isEmpty($student)){
 				$errors[] = "input files not found";
-				if (!empty($bid)){
+				if (!isEmpty($bid)){
 					fclose($bid);
 					@unlink($bid);
 				} 
 				
-				if (!empty($course_completed)) {
+				if (!isEmpty($course_completed)) {
 					fclose($course_completed);
 					@unlink($course_completed);
 				}
 				
-				if (!empty($course)) {
+				if (!isEmpty($course)) {
 					fclose($course);
 					@unlink($course);
 				}
 
-				if (!empty($prerequisite)) {
+				if (!isEmpty($prerequisite)) {
 					fclose($prerequisite);
 					@unlink($prerequisite);
 				}
 				
-				if (!empty($section)) {
+				if (!isEmpty($section)) {
 					fclose($section);
 					@unlink($section);
 				}
 
-				if (!empty($student)) {
+				if (!isEmpty($student)) {
 					fclose($student);
 					@unlink($student);
 				}
@@ -166,9 +162,30 @@ function doBootstrap() {
 					$encountered_Error['message'] = array();
 					
 
-					//check if empty
-					if (empty($data[0]) || empty($data[1]) || empty($data[2]) || empty($data[3]) || empty($data[4]) || empty($data[5]) || empty($data[6])){
-						array_push ($encountered_Error['message'],'Empty Field Encountered');
+					//check if isEmpty
+					if (isEmpty($data[0]) || isEmpty($data[1]) || isEmpty($data[2]) || isEmpty($data[3]) || isEmpty($data[4]) || isEmpty($data[5]) || isEmpty($data[6])){
+						if (isEmpty($data[0])){
+							array_push ($encountered_Error['message'],'blank course');
+						}
+						if (isEmpty($data[1])){
+							array_push ($encountered_Error['message'],'blank school');
+						}
+						if (isEmpty($data[2])){
+							array_push ($encountered_Error['message'],'blank title');
+						}
+						if (isEmpty($data[3])){
+							array_push ($encountered_Error['message'],'blank description');
+						}
+						if (isEmpty($data[4])){
+							array_push ($encountered_Error['message'],'blank exam date');
+						}
+						if (isEmpty($data[5])){
+							array_push ($encountered_Error['message'],'blank exam start');
+						}
+						if (isEmpty($data[6])){
+							array_push ($encountered_Error['message'],'blank exam end');
+						}
+
 						$errors[] = $encountered_Error;
 					}
 					else{
@@ -197,7 +214,7 @@ function doBootstrap() {
 					}
 
 					//check if any errors
-					if (empty($encountered_Error['message'])){
+					if (isEmpty($encountered_Error['message'])){
 						array_push ($encounteredCourses,$data[0]); //insert courses into array
 						$newCourse = new Course($data[0], $data[1], $data[2], $data[3] , $data[4] , $data[5] , $data[6]);
 						$CourseDAO->add($newCourse);
@@ -231,9 +248,24 @@ function doBootstrap() {
 					$encountered_Error['line'] = $row_Count;
 					$encountered_Error['message'] = array();
 					
-					//check if empty
-					if (empty($data[0]) || empty($data[1]) || empty($data[2]) || empty($data[3]) || empty($data[4]) ){
-						array_push ($encountered_Error['message'],'Empty Field Encountered');
+					//check if isEmpty
+					if (isEmpty($data[0]) || isEmpty($data[1]) || isEmpty($data[2]) || isEmpty($data[3]) || isEmpty($data[4]) ){
+						if (isEmpty($data[0])){
+							array_push ($encountered_Error['message'],'blank userid');
+						}
+						if (isEmpty($data[1])){
+							array_push ($encountered_Error['message'],'blank password');
+						}
+						if (isEmpty($data[2])){
+							array_push ($encountered_Error['message'],'blank name');
+						}
+						if (isEmpty($data[3])){
+							array_push ($encountered_Error['message'],'blank school');
+						}
+						if (isEmpty($data[4])){
+							array_push ($encountered_Error['message'],'blank edollar');
+						}
+						
 						$errors[] = $encountered_Error;
 					}
 					else{
@@ -265,7 +297,7 @@ function doBootstrap() {
 					}
 					
 					//check if any errors
-					if (empty($encountered_Error['message'])){
+					if (isEmpty($encountered_Error['message'])){
 						array_push ($encounteredUsers,$data[0]); //hold it as a valid user
 						$newStudent = new Student($data[0], $data[1], $data[2], $data[3] , $data[4]);
 						$StudentDAO->add($newStudent);
@@ -300,10 +332,33 @@ function doBootstrap() {
 					$encountered_Error['line'] = $row_Count;
 					$encountered_Error['message'] = array();
 
-					//check if empty
-					if (empty($data[0]) || empty($data[1]) || empty($data[2]) || empty($data[3]) || empty($data[4]) || empty($data[5]) || empty($data[6]) || empty($data[7])){
+					//check if isEmpty
+					if (isEmpty($data[0]) || isEmpty($data[1]) || isEmpty($data[2]) || isEmpty($data[3]) || isEmpty($data[4]) || isEmpty($data[5]) || isEmpty($data[6]) || isEmpty($data[7])){
+						if (isEmpty($data[0])){
+							array_push ($encountered_Error['message'],'blank course');
+						}
+						if (isEmpty($data[1])){
+							array_push ($encountered_Error['message'],'blank section');
+						}
+						if (isEmpty($data[2])){
+							array_push ($encountered_Error['message'],'blank day');
+						}
+						if (isEmpty($data[3])){
+							array_push ($encountered_Error['message'],'blank start');
+						}
+						if (isEmpty($data[4])){
+							array_push ($encountered_Error['message'],'blank end');
+						}
+						if (isEmpty($data[5])){
+							array_push ($encountered_Error['message'],'blank instructor');
+						}
+						if (isEmpty($data[6])){
+							array_push ($encountered_Error['message'],'blank venue');
+						}
+						if (isEmpty($data[7])){
+							array_push ($encountered_Error['message'],'blank size');
+						}
 
-						array_push ($encountered_Error['message'],'Empty Field Encountered');
 						$errors[] = $encountered_Error;
 					}
 					else{
@@ -348,7 +403,7 @@ function doBootstrap() {
 					}
 					
 					//check if any errors
-					if (empty($encountered_Error['message'])){
+					if (isEmpty($encountered_Error['message'])){
 						array_push ($encounteredSections,$data[0]);
 						$newSection = new Section($data[0], $data[1], $data[2], $data[3] , $data[4] , $data[5] , $data[6], $data[7]);
 						$SectionDAO->add($newSection);
@@ -380,9 +435,15 @@ function doBootstrap() {
 					$encountered_Error['line'] = $row_Count;
 					$encountered_Error['message'] = array();
 
-					//check if empty
-					if (empty($data[0]) || empty($data[1])){
-						array_push ($encountered_Error['message'],'Empty Field Encountered');
+					//check if isEmpty
+					if (isEmpty($data[0]) || isEmpty($data[1])){
+						if (isEmpty($data[0])){
+							array_push ($encountered_Error['message'],'blank course');
+						}
+						if (isEmpty($data[1])){
+							array_push ($encountered_Error['message'],'blank prerequisite');
+						}
+						
 						$errors[] = $encountered_Error;
 					}
 					else{
@@ -397,7 +458,7 @@ function doBootstrap() {
 					}
 
 					//check if any errors
-					if (empty($encountered_Error['message'])){
+					if (isEmpty($encountered_Error['message'])){
 						$newPrerequisite = new Prerequisite( $data[0], $data[1] );
 						$PrerequisiteDAO->add( $newPrerequisite );
 						$prerequisite_processed++;
@@ -426,9 +487,15 @@ function doBootstrap() {
 					$encountered_Error['file'] = "course_completed.csv";
 					$encountered_Error['line'] = $row_Count;
 					$encountered_Error['message'] = array();
-					//check if empty
-					if (empty($data[0]) || empty($data[1])){
-						array_push ($encountered_Error['message'],'Empty Field Encountered');
+					//check if isEmpty
+					if (isEmpty($data[0]) || isEmpty($data[1])){
+						if (isEmpty($data[0])){
+							array_push ($encountered_Error['message'],'blank userid');
+						}
+						if (isEmpty($data[1])){
+							array_push ($encountered_Error['message'],'blank code');
+						}
+						
 						$errors[] = $encountered_Error;
 					}
 					else{
@@ -446,7 +513,7 @@ function doBootstrap() {
 					//check if course completed has a pre-req
 					$preReqs = $PrerequisiteDAO->retrievePrerequisites($data[1]);
 					$trigger = "0";
-					if(!empty($preReqs))
+					if(!isEmpty($preReqs))
 					{
 						$currentCourses = $CourseCompletedDAO->retrieveCourseCompleted($data[0]);
 						foreach($preReqs as $element){
@@ -460,7 +527,7 @@ function doBootstrap() {
 					}
 						
 					//check if any errors
-					if (empty($encountered_Error['message'])){
+					if (isEmpty($encountered_Error['message'])){
 						$newCourseCompleted = new CourseCompleted( $data[0], $data[1] );
 						$CourseCompletedDAO->add( $newCourseCompleted );
 						$course_completed_processed++;
@@ -488,10 +555,21 @@ function doBootstrap() {
 					$encountered_Error['line'] = $row_Count;
 					$encountered_Error['message'] = array();
 
-					//check if empty
-					if (empty($data[0]) || empty($data[1]) || empty($data[2]) || empty($data[3])){
+					//check if isEmpty
+					if (isEmpty($data[0]) || isEmpty($data[1]) || isEmpty($data[2]) || isEmpty($data[3])){
+						if (isEmpty($data[0])){
+							array_push ($encountered_Error['message'],'blank userid');
+						}
+						if (isEmpty($data[1])){
+							array_push ($encountered_Error['message'],'blank amount');
+						}
+						if (isEmpty($data[2])){
+							array_push ($encountered_Error['message'],'blank code');
+						}
+						if (isEmpty($data[3])){
+							array_push ($encountered_Error['message'],'blank section');
+						}
 
-						array_push ($encountered_Error['message'],'Empty Field Encountered');
 						$errors[] = $encountered_Error;
 					}
 					else{
@@ -521,14 +599,13 @@ function doBootstrap() {
 						}
 					}
 					//validation completed
-					//check error log, if empty - execute logic validation
-					if (empty($encountered_Error['message'])){
+					//check error log, if isEmpty - execute logic validation
+					if (isEmpty($encountered_Error['message'])){
 					//LOGIC Validations (7)
 					$retrieveBids = $BidDAO->retrieveBids($data[0]); //retrieve previous confirmed bids
 
 					//"not own school course"
-
-					if ($_SESSION['round']=="1"){
+					if ($_SESSION['round']=="0"){
 						$studentObj = $StudentDAO->retrieve($data[0]);
 						$courseObj = $CourseDAO->retrieveSchool($data[2]);
 						if ($studentObj->school != $courseObj){
@@ -536,10 +613,8 @@ function doBootstrap() {
 						}
 					}
 
-				
 					//if matching course, skips exam timetable check
 					if (($BidDAO ->checkForSimilarCourseBid($data[0],$data[2]))==false){
-
 						//"class timetable clash"
 						foreach($retrieveBids as $element){
 							//retrieve bid's day and start time 
@@ -547,11 +622,11 @@ function doBootstrap() {
 							//retrieve day and start time base on section and course
 							$retrieveSection = $SectionDAO ->retrieveByCourseSection($data[2],$data[3]);
 							if($biddedSection->day == $retrieveSection->day && $biddedSection->start == $retrieveSection->start){
-								//it clashes
-								array_push ($encountered_Error['message'],'class timetable clash');
+							//it clashes
+							array_push ($encountered_Error['message'],'class timetable clash');
 							}
 						}
-
+			
 						//"exam timetable clash" 
 						foreach($retrieveBids as $element){
 							//retrieve bid's day and start time 
@@ -559,8 +634,8 @@ function doBootstrap() {
 							//retrieve day and start time base on section and course
 							$retrieveExam = $CourseDAO ->retrieveExam($data[2]);
 							if($biddedSection->exam_date == $retrieveSection->exam_date && $biddedSection->exam_start == $retrieveSection->exam_start){
-								//it clashes
-								array_push ($encountered_Error['message'],'exam timetable clash');
+							//it clashes
+							array_push ($encountered_Error['message'],'exam timetable clash');
 							}
 						}
 					}
@@ -570,7 +645,7 @@ function doBootstrap() {
 					//"incomplete prerequisites" 
 					$preReqs = $PrerequisiteDAO->retrievePrerequisites($data[2]);
 					$trigger = "0";
-					if(!empty($preReqs))
+					if(!isEmpty($preReqs))
 					{
 						$coursesCompleted = $CourseCompletedDAO->retrieveCourseCompleted($data[0]);
 						foreach($preReqs as $element){
@@ -595,7 +670,7 @@ function doBootstrap() {
 						array_push ($encountered_Error['message'],'section limit reached');
 					}
 
-					if (empty($encountered_Error['message'])){
+					if (isEmpty($encountered_Error['message'])){
 
 					//"not enough e-dollar" 
 					$retrieveUser = $StudentDAO->retrieve($data[0]); //check current e-dollar amount
@@ -668,7 +743,7 @@ function doBootstrap() {
 
 	# Sample code for returning JSON format errors. remember this is only for the JSON API. Humans should not get JSON errors.
 
-	if (!empty($errors))
+	if (!isEmpty($errors))
 	{	
 		// $sortclass = new Sort();
 		// $errors = $sortclass->sort_it($errors,"bootstrap");
@@ -705,5 +780,7 @@ function doBootstrap() {
 	
 }
 
-
+//trigger round 1 to begin
+$roundDAO = new RoundDAO();
+$roundDAO ->activateRoundOne();
 ?>
