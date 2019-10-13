@@ -46,7 +46,9 @@ else{
     <h3><?= $message ?>  </h3>
 
     <h1>
-        <a href='BidMod.php'>Bid for Mods!</a>
+        <a href='ManageBids.php'>Bid for Mods!</a>
+        <br><br>
+        <a href='ViewBid.php'>View my current Bids!</a>
         <br><br>
         <a href='Logout.php'>Log Out</a>
     </h1>

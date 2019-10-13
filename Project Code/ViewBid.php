@@ -10,17 +10,9 @@ $results = $dao->retrieveBids($student);
 
 <html>
     <head>
-        <!-- <link rel="stylesheet" type="text/css" href="include/style.css"> -->
-        <!-- <style>
-	        table{border: 1px solid black;}
-            th,td{border: 1px solid black; text-align: center;}   
-            </style> -->
     </head>
     <body>
         <h1>Current Bids for <?= $student ?></h1>
-        <!-- <p>
-            <a href='logout.php'>Logout</a>
-        </p> -->
 
         <table border="1">
             <tr>
@@ -28,7 +20,7 @@ $results = $dao->retrieveBids($student);
                 <th>Course</th>
                 <th>Section</th>
                 <th>Amount</th>
-                <th>Status</th>    
+                <th>Drop</th>    
             </tr>
 <?php            
         for ($i = 1; $i <= count($results); $i++) {
@@ -39,7 +31,7 @@ $results = $dao->retrieveBids($student);
                 <td>$bid->courseid</td>
                 <td>$bid->section</td>
                 <td>$bid->amount</td>
-                <td>Status</td>
+                <td>Drop</td>
             </tr>
             "; 
             
@@ -47,9 +39,8 @@ $results = $dao->retrieveBids($student);
 ?>
         
         </table>
-        
-        <p>
-        <a id="edit" href="edit.php">Edit</a>
-        </p>
+        <br/>
+        <br/>
+        <a href='StudentPage.php'>Return to home!</a>
     </body>
 </html>
