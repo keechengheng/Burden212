@@ -23,7 +23,7 @@ class BidDAO {
     }
 
     public function drop($bid) {
-        $sql = "DELETE FROM bid WHERE (userid = :userid, courseid=:courseid, section=:section)";
+        $sql = "DELETE FROM bid WHERE userid = :userid and courseid=:courseid and section=:section";
 
         $connMgr = new ConnectionManager();      
         $conn = $connMgr->getConnection();
