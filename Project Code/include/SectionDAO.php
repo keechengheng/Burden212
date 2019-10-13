@@ -58,10 +58,10 @@ class SectionDAO {
         
 
         $sections = [];
-        while ($row =$stmt->fetch()){
-            $sections[]= new Section ($row['day'],$row['start']);
-        }
         
+        while ($row =$stmt->fetch()){
+            $sections[]= new Section ($row['courseid'],$row['section'], $row['day'],$row['start'],$row['end'],$row['instructor'],$row['venue'],$row['size']);
+        }
         return $sections;
     }
 	
