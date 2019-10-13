@@ -9,6 +9,7 @@ if(!isset($_SESSION['userid'])){
 
 function insertManualBid()
 {
+   
     $BidDAO = new BidDAO();
     $CourseDAO = new CourseDAO();
     $roundDAO = new RoundDAO();
@@ -27,7 +28,7 @@ function insertManualBid()
     $amount = $_POST['amount'];
 
     if (isset($_POST['courseid']) && isset($_POST['section']) && isset($_POST['amount'])){
-
+        
         //check input amount
         if ((!is_numeric($amount) || strlen(substr(strrchr($amount, "."), 1)) > 2|| $amount<10))
         {
@@ -106,7 +107,7 @@ function insertManualBid()
         if(in_array($courseid,$coursesCompleted)){
             array_push ($encountered_Error['message'],'course completed');
         }
-
+        
         //"section limit reached"
         if (count($BidDAO->retrieveBids($user))>=5)
         {
@@ -114,7 +115,6 @@ function insertManualBid()
         }
 
         if (isEmpty($encountered_Error['message'])){
-
             //"not enough e-dollar" 
             $retrieveUser = $StudentDAO->retrieve($user); //check current e-dollar amount
             $currentAmountSpent = 0;
@@ -142,7 +142,7 @@ function insertManualBid()
                 }
                 else{
                     //update with new bid amount + new section
-                    $BidDAO -> update($user,$courseid,$amount,$section);
+                    $BidDAO -> update($user,$amount,$courseid,$section);
                 }
             }
             else{
@@ -153,7 +153,7 @@ function insertManualBid()
                 }
                 else{
                     //update with new bid amount
-                    $newBid = new Bid($user,$courseid,$amount,$section);
+                    $newBid = new Bid($user,$amount,$courseid,$section);
                     $BidDAO->add( $newBid );
                 }
             }
