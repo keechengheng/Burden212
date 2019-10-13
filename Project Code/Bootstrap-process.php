@@ -7,14 +7,6 @@ if(!isset($_SESSION['userid']) || $_SESSION['userid'] !== 'Admin'){
     return;
 }
 
-echo '<html>
-<body>
-    <form action="AdminPage.php">
-        <input type="submit" name="submit" value="Back to Main Page">
-    </form>
-</body>
-</html>';
-
 doBootstrap();
 
 ?>
