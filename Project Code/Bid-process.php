@@ -200,6 +200,7 @@ function dropManualBid()
         if (isEmpty($encountered_Error['message'])){
             $newBid = new Bid($user,$amount,$courseid,$section);
             $BidDAO->drop($newBid);
+            header("Location: ViewBid.php");
             }
             else{
                 $errors = $encountered_Error;
