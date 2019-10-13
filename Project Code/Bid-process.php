@@ -13,11 +13,12 @@ if(!isset($_SESSION['userid'])){
     $PrerequisiteDAO = new PrerequisiteDAO();
     $SectionDAO = new SectionDAO();
     $CourseCompletedDAO = new CourseCompletedDAO();
+    $user = $_SESSION['userid'];
 function insertManualBid()
 {
    
     $round = $roundDAO ->retrieveRound();
-    $user = $_SESSION['userid'];
+   
     $encountered_Error = array();
     $encountered_Error['message'] = array();
 
