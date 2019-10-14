@@ -1,13 +1,21 @@
 <?php
 
-//For MacOSX
 class ConnectionManager {
    
     public function getConnection() {
         
         $host = "localhost";
         $username = "root";
-        $password = "";  
+
+        // For Windows
+        // $password = "";
+
+        //For MacOSC
+        //$password = "root";  
+
+        //For AWS
+        $password = "FPhD75eE2LHQ";
+
         $dbname = "SPM_Proj_2019";
         $port = 3306;    
 
