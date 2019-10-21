@@ -41,7 +41,7 @@ class BidDAO {
         return $isAddOK;
     }
 
-    public function update($userid, $courseid, $amount,$section) {
+    public function update($userid,$amount,$courseid,$section) {
         $sql = "UPDATE bid set amount=:amount, section=:section where userid=:userid and courseid=:courseid";
 
         $connMgr = new ConnectionManager();      
@@ -61,6 +61,89 @@ class BidDAO {
         return $isAddOK;
     }
 
+    public function retrieveAll () {
+        $sql = 'select * from bid';
+        
+        $connMgr = new ConnectionManager();
+        $conn = $connMgr->getConnection();
+        
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        
+        $studentBid = [];
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+        while ($row =$stmt->fetch()){
+            $studentBid[]= new Bid ($row['userid'],$row['amount'],$row['courseid'],$row['section']);
+        }
+        return $studentBid; 
+    }
+
+    public function retrieveDT () {
+        $sql = 'select * from bid order by courseid ASC, section ASC, amount DESC, userid ASC';
+        
+        $connMgr = new ConnectionManager();
+        $conn = $connMgr->getConnection();
+        
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        
+        $studentBid = [];
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+        while ($row =$stmt->fetch()){
+            $studentBid[]= ["userid" => $row['userid'], "amount" => (float)$row['amount'],
+                        "course" => $row['courseid'], "section" => $row['section']];
+        }
+        return $studentBid; 
+    }
+
+    public function retrieveDB ($courseid, $section) {
+
+        //Retrieve from bid table first then check with bidding results table
+        $sql = 'select * from bid where courseid=:courseid AND section=:section order by amount DESC, userid ASC';
+        
+        $connMgr = new ConnectionManager();
+        $conn = $connMgr->getConnection();
+        
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':courseid', $courseid, PDO::PARAM_STR);
+        $stmt->bindParam(':section', $section, PDO::PARAM_STR);
+        $stmt->execute();
+        
+        $studentBid = [];
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+
+        $sql2 = 'select * from bidding_results WHERE userid=:userid AND courseid=:courseid AND section=:section';
+        $stmt2 = $conn->prepare($sql2);
+
+        $rowNum = 1;
+        while ($row =$stmt->fetch()){
+
+            $stmt2->bindParam(':userid', $userid, PDO::PARAM_STR);
+            $stmt2->bindParam(':courseid', $courseid, PDO::PARAM_STR);
+            $stmt2->bindParam(':section', $section, PDO::PARAM_STR);
+            $stmt2->execute();
+            $stmt2->setFetchMode(PDO::FETCH_ASSOC);
+            
+            $status = '-';
+            if ($stmt2->rowCount() > 0){
+                $row2 = $stmt2->fetch();
+                if($row2['status'] == "SUCCESSFUL"){
+                    $status = "IN";
+                }
+                else{
+                    $status = "OUT";
+                }
+            }
+
+            $studentBid[]= ["row" => $rowNum, "userid" => $row['userid'], 
+                        "amount" => (float)$row['amount'], "result" => $status];
+            
+            $rowNum++;
+        }
+
+        return $studentBid; 
+    }
+
     public function retrieveBids($student) {
         $sql = 'select * from bid where userid=:userid';
         
@@ -77,6 +160,30 @@ class BidDAO {
             $studentBid[]= new Bid ($row['userid'],$row['amount'],$row['courseid'],$row['section']);
         }
         return $studentBid; 
+    }
+
+    public function findError($courseid, $section) {
+        $connMgr = new ConnectionManager();
+        $conn = $connMgr->getConnection();
+        $error = array();
+
+        $sql = 'select * from bid where courseid=:courseid';
+        
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':courseid', $courseid, PDO::PARAM_STR);
+        $stmt->execute();
+        
+        $studentBid = [];
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+
+        if ($stmt->rowCount() == 0){
+            array_push($error, "invalid course");
+        }
+        else{
+            array_push($error, "invalid section");
+        }
+
+        return $error; 
     }
     
 

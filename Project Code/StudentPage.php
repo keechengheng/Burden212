@@ -16,23 +16,26 @@ else{
     $round = $roundDAO ->retrieveRound();
     $_SESSION['round'] = $round;
     $_SESSION['status'] = $round[1];
-
+    $disabledMessage = "";
     if ($round[0] == "0")
     {
         $message="The system is currently not open for bidding.";
         $statusMessage = 'Closed';
         $roundNumber = "0";
+        $disabledMessage ="style='display:none'";
     }
     if ($round[0] == "1")
     {
         $roundNumber = "1";
         if  ($round[1]=="0"){
-            $message="The system is currently closed and processing Round 1 bidding results.";
+            $message="The system is currently closed - you may review your Round 1 bidding results.";
             $statusMessage = 'Closed';
+          
         }
         else{
             $message="The system is currently opened for Round 1 of bidding.";
             $statusMessage = 'Open';
+            $disabledMessage ="style='display:none'";
         }
         
     }
@@ -40,17 +43,21 @@ else{
     {
         $roundNumber = "2";
         if  ($round[1]=="0"){
-            $message="The system is currently closed and processing Round 2 bidding results.";
+            $message="The system is currently closed - you may review your Round 2 bidding results.";
             $statusMessage = "Closed";
+            
         }
         else{
             $message="The system is currently opened for Round 2 of bidding.";
             $statusMessage = "Open";
+            
         }
     }
 
-    $BiddingResultsDAO = new BiddingResultsDAO();
-    $retrieveBids = $BiddingResultsDAO->retrieveBids($user->userid); //retrieve previous confirmed bids
+    
+  
+    $BidDAO = new BidDAO();
+    $retrieveBids = $BidDAO->retrieveBids($user->userid); //retrieve previous confirmed bids
     $currentAmountSpent = 0;
 
     foreach($retrieveBids as $element){
@@ -58,6 +65,8 @@ else{
         $currentAmountSpent = $currentAmountSpent + $element->amount;
     }
 
+    $BiddingResultsDAO = new BiddingResultsDAO();
+    $retrieveResults = $BiddingResultsDAO->retrieveBids($user->userid); //retrieve previous confirmed bids
     
 
 ?>
@@ -71,6 +80,7 @@ else{
     <h2> Round: <?= $roundNumber ?></h2>
     <h2> Status: <?= $statusMessage ?></h2>
     <br/>
+    <div <?= $disabledMessage ?> >
     <table border="1">
             <tr>
                 <th>S/N</th>
@@ -79,23 +89,24 @@ else{
                 <th>Amount</th>
                 <th>Status</th>  
             </tr>
-<?php            
-        for ($i = 1; $i <= count($retrieveBids); $i++) {
-            $bid = $retrieveBids[$i-1];
-            echo "
-            <tr>
-                <td>$i</td>
-                <td>$bid->courseid</td>
-                <td>$bid->section</td>
-                <td>$bid->amount</td>
-                <td>$bid->status</td>
-            </tr>
-            "; 
-            
-        }
-?>
+            <?php            
+                    for ($i = 1; $i <= count($retrieveResults); $i++) {
+                        $bid = $retrieveResults[$i-1];
+                        echo "
+                        <tr>
+                            <td>$i</td>
+                            <td>$bid->courseid</td>
+                            <td>$bid->section</td>
+                            <td>$bid->amount</td>
+                            <td>$bid->status</td>
+                        </tr>
+                        "; 
+                        
+                    }
+            ?>
         
-        </table>
+    </table>
+    </div>
 
     <h1>
         <a href='ManageBids.php'>Bid for Mods!</a>

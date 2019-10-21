@@ -83,11 +83,11 @@ class RoundDAO {
             $scBids[] = [$row['COURSEID'],$row['SECTION']];
         }
 
-        $sql = "SELECT * FROM BID WHERE COURSEID = :COURSEID AND SECTION = :SECTION ORDER BY AMOUNT DESC";
-
-        $stmt = $conn->prepare($sql);
+        
 
         foreach ($scBids as $item) {
+            $sql = "SELECT * FROM BID WHERE COURSEID = :COURSEID AND SECTION = :SECTION ORDER BY AMOUNT DESC";
+            $stmt = $conn->prepare($sql);
             $stmt->bindParam(':COURSEID', $item[0], PDO::PARAM_STR);
             $stmt->bindParam(':SECTION', $item[1], PDO::PARAM_STR);
             $stmt->execute();

@@ -10,4 +10,3 @@ if(!isset($_SESSION['userid']) || $_SESSION['userid'] !== 'Admin'){
 doBootstrap();
 
 ?>
-

@@ -136,10 +136,6 @@ function doBootstrap() {
 				$StudentDAO -> removeAll();
 
 				
-				//trigger round 1 to begin
-				$roundDAO = new RoundDAO();
-				$roundDAO ->activateRoundOne();
-
 				# then read each csv file line by line (remember to skip the header)
 				# $data = fgetcsv($file) gets you the next line of the CSV file which will be stored 
 				# in the array $data
@@ -608,10 +604,8 @@ function doBootstrap() {
 					//LOGIC Validations (7)
 					$retrieveBids = $BidDAO->retrieveBids($data[0]); //retrieve previous confirmed bids
 
-					$roundDAO = new RoundDAO();
-					$round = $roundDAO ->retrieveRound();
 					//"not own school course"
-					if ($round[0]=="1"){
+					if ($_SESSION['round']=="0"){
 						$studentObj = $StudentDAO->retrieve($data[0]);
 						$courseObj = $CourseDAO->retrieveSchool($data[2]);
 						if ($studentObj->school != $courseObj){
@@ -627,7 +621,7 @@ function doBootstrap() {
 							$biddedSection = $SectionDAO ->retrieveByCourseSection($element->courseid,$element->section);
 							//retrieve day and start time base on section and course
 							$retrieveSection = $SectionDAO ->retrieveByCourseSection($data[2],$data[3]);
-							if(($biddedSection->day == $retrieveSection->day) && ($biddedSection->start == $retrieveSection->start)){
+							if($biddedSection->day == $retrieveSection->day && $biddedSection->start == $retrieveSection->start){
 							//it clashes
 							array_push ($encountered_Error['message'],'class timetable clash');
 							}
@@ -639,7 +633,7 @@ function doBootstrap() {
 							$biddedExam = $CourseDAO ->retrieveExam($element->courseid);
 							//retrieve day and start time base on section and course
 							$retrieveExam = $CourseDAO ->retrieveExam($data[2]);
-							if(($biddedExam->exam_date == $retrieveExam->exam_date) && ($biddedExam->exam_start == $retrieveExam->exam_start)){
+							if($biddedSection->exam_date == $retrieveSection->exam_date && $biddedSection->exam_start == $retrieveSection->exam_start){
 							//it clashes
 							array_push ($encountered_Error['message'],'exam timetable clash');
 							}
@@ -671,7 +665,7 @@ function doBootstrap() {
 					}
 
 					//"section limit reached"
-					if (count($BidDAO->retrieveBids($data[0]))>=5)
+					if (count($BidDAO->retrieveBids($data[0]))>5)
 					{
 						array_push ($encountered_Error['message'],'section limit reached');
 					}
@@ -786,4 +780,7 @@ function doBootstrap() {
 	
 }
 
+//trigger round 1 to begin
+$roundDAO = new RoundDAO();
+$roundDAO ->activateRoundOne();
 ?>

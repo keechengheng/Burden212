@@ -26,8 +26,7 @@ $currentAmountSpent = 0;
                 <th>S/N</th>
                 <th>Course</th>
                 <th>Section</th>
-                <th>Amount</th>
-                <th>Drop</th>    
+                <th>Amount</th>  
             </tr>
 <?php            
         for ($i = 1; $i <= count($results); $i++) {
@@ -38,7 +37,6 @@ $currentAmountSpent = 0;
                 <td>$bid->courseid</td>
                 <td>$bid->section</td>
                 <td>$bid->amount</td>
-                <td>Drop</td>
             </tr>
             "; 
             

@@ -21,7 +21,7 @@ class Student {
     }
 
     public function adminLogin($enteredPwd) {
-        return $enteredPwd === 'password';
+        return $enteredPwd === 'Ellesse101@';
     }
 }
 

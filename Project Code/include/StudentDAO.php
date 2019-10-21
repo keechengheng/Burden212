@@ -33,7 +33,27 @@ class StudentDAO {
 
 
         while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $result[] = new Student($row['username'], $row['password'], $row['name'], $row['school'], $row['edollar']);
+            $result[] = new Student($row['userid'], $row['password'], $row['name'], $row['school'], $row['edollar']);
+        }
+        return $result;
+    }
+
+    public  function retrieveDT() {
+        $sql = 'select * from student order by userid ASC';
+        
+        $connMgr = new ConnectionManager();      
+        $conn = $connMgr->getConnection();
+
+        $stmt = $conn->prepare($sql);
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+        $stmt->execute();
+
+        $result = array();
+
+
+        while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $result[] = ["userid" => $row['userid'], "password" => $row['password'], 
+                    "name" => $row['name'], "school" => $row['school'], "edollar" => (float)$row['edollar']];
         }
         return $result;
     }

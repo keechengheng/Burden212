@@ -25,6 +25,25 @@ class CourseDAO {
         return $isAddOK;
     }
 
+    public function retrieveDT() {
+        $sql = "select * from course order by courseid ASC";
+
+        $connMgr = new ConnectionManager();      
+        $conn = $connMgr->getConnection();
+        $stmt = $conn->prepare($sql);
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+        $stmt->execute();
+
+        $courses = [];
+        while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $courses[] = ["course" => $row['courseid'], "school" => $row['school'], "title" => $row['title'], 
+                        "description" => $row['description'], "exam date" => $row['exam_date'], 
+                        "exam start" => $row['exam_start'] , "exam end" => $row['exam_end']];
+        }
+        
+        return $courses;
+    }
+
     public function retrieveCourse($course) {
         $sql = "select * from course where courseid=:course";
 
@@ -37,7 +56,7 @@ class CourseDAO {
         
         return $stmt->rowCount();
     }
-    
+
     public  function retrieveSchool($course) {
         $sql = 'select school from course where courseid=:courseid';
         
@@ -50,7 +69,7 @@ class CourseDAO {
         $stmt->execute();
 
 
-        while($row = $stmt->fetch()) {
+        while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             return $value = $row['school'];
           }
     }
@@ -67,11 +86,11 @@ class CourseDAO {
         $stmt->bindParam(':courseid', $course, PDO::PARAM_STR);
         $stmt->execute();
 
-
         while ($row =$stmt->fetch()){
             return new Course ($row['courseid'],$row['school'], $row['title'],$row['description'],$row['exam_date'],$row['exam_start'],$row['exam_end']);
-        }
-
+    }
+        
+     
     }
 	
 	 public function removeAll() {

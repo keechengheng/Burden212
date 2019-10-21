@@ -20,6 +20,40 @@ class PrerequisiteDAO {
         return $isAddOK;
     }
 
+    public function retrieveAll () {
+        $sql = "select * from prerequisite";
+
+        $connMgr = new ConnectionManager();      
+        $conn = $connMgr->getConnection();
+        $stmt = $conn->prepare($sql);
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+        $stmt->execute();
+        
+        $prerequisite = [];
+        while ($row =$stmt->fetch()){
+            $prerequisite[] = new Prerequisite($row['courseid'], $row['prerequisiteid']);
+        }
+
+        return $prerequisite;
+    }
+
+    public function retrieveDT () {
+        $sql = "select * from prerequisite order by courseid ASC, prerequisiteid ASC";
+
+        $connMgr = new ConnectionManager();      
+        $conn = $connMgr->getConnection();
+        $stmt = $conn->prepare($sql);
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+        $stmt->execute();
+        
+        $prerequisite = [];
+        while ($row =$stmt->fetch()){
+            $prerequisite[] = ["course" => $row['courseid'], "prerequisite" => $row['prerequisiteid']];
+        }
+
+        return $prerequisite;
+    }
+
     public function retrievePrerequisites($course) {
         $sql = "select prerequisiteid from prerequisite where courseid=:course";
 

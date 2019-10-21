@@ -26,14 +26,14 @@ class SectionDAO {
         return $isAddOK;
     }
 
-    public function retrieveByCourse($course) {
+    public function retrieveByCourse($section) {
         $sql = "select section from section where courseid=:course";
 
         $connMgr = new ConnectionManager();      
         $conn = $connMgr->getConnection();
         $stmt = $conn->prepare($sql);
         $stmt->setFetchMode(PDO::FETCH_ASSOC);
-        $stmt->bindParam(':course', $course, PDO::PARAM_STR);
+        $stmt->bindParam(':course', $section, PDO::PARAM_STR);
         $stmt->execute();
         
 
@@ -92,7 +92,26 @@ class SectionDAO {
                                     $row['start'],$row['end'],$row['instructor'],
                                     $row['venue'],$row['size']);
            
-    }
+        }
         return $sectionAll;
+    }
+
+    public function retrieveDT() {
+        $connMgr = new ConnectionManager();      
+        $conn = $connMgr->getConnection();
+        $sql = "select * from section ORDER BY courseid ASC, section ASC";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+
+        $sectionAll = [];
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+        while ($row = $stmt->fetch()) {
+            $sectionAll[] = ["course" => $row['courseid'], "section" => $row['section'], "day" => (int)$row['day'], 
+                                "start" => $row['start'], "end" => $row['end'], "instructor" => $row['instructor'],
+                                "venue" => $row['venue'], "size" => (int)$row['size']];
+           
+        }
+        return $sectionAll;
+    }
 }
-}
+

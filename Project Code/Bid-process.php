@@ -142,6 +142,7 @@ function insertManualBid()
                 else{
                     //update with new bid amount + new section
                     $BidDAO -> update($user,$amount,$courseid,$section);
+                    header("Location: ViewBid.php");
                 }
             }
             else{

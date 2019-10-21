@@ -2,6 +2,44 @@
 
 class CourseCompletedDAO {
 
+    public function retrieveAll () {
+        $sql = 'select * from course_completed';
+        
+        $connMgr = new ConnectionManager();
+        $conn = $connMgr->getConnection();
+        
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+        $courses = [];
+
+        while ($row =$stmt->fetch()){
+            $courses[] = new CourseCompleted($row['userid'], $row['courseid']);
+        }
+
+        return $courses; 
+    }
+
+    public function retrieveDT () {
+        $sql = 'select * from course_completed order by courseid ASC, userid ASC';
+        
+        $connMgr = new ConnectionManager();
+        $conn = $connMgr->getConnection();
+        
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+        $courses = [];
+
+        while ($row =$stmt->fetch()){
+            $courses[] = ["userid" => $row['userid'], "course" => $row['courseid']];
+        }
+
+        return $courses; 
+    }
+
     public function add($course_completed) {
         $sql = "INSERT IGNORE INTO course_completed (userid, courseid) VALUES (:userid, :courseid)";
 
