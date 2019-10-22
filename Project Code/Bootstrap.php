@@ -7,6 +7,8 @@ if(!isset($_SESSION['userid']) || $_SESSION['userid'] !== 'Admin'){
     return;
 }
 
+$user = $_SESSION['userid'];
+
 ?>
 
 
