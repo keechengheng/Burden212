@@ -52,37 +52,55 @@ if ( isset($_GET['error']) ) {
 
 ?>
 
+<!DOCTYPE html>
 <html>
-    <body>
-        <h1>SMU Boss Bidding System :></h1>
-        <h2>Login</h2>
 
-        <form method='POST' action='Login.php'>
-            <table>
-                <tr>
-                    <td>UserID</td>
-                    <td>
-                        <input name='userid' />
-                    </td>
-                </tr>
-                <tr>
-                    <td>Password</td>
-                    <td>
-                        <input name='password' type='password' />
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan='2'>
-                        <input name='Login' type='submit' />
-                    </td>
-                </tr>
-            </table>             
-        </form>
+<head>
 
-        <p>
-            <?=$error?>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        </p>
-        
-    </body>
+    <title>Merlion University | Login</title>
+
+    <link href="css\bootstrap.min.css" rel="stylesheet">
+    <link href="font-awesome\css\font-awesome.css" rel="stylesheet">
+
+    <link href="css\animate.css" rel="stylesheet">
+    <link href="css\style.css" rel="stylesheet">
+
+</head>
+
+<body class="gray-bg">
+
+    <div class="middle-box text-center loginscreen animated fadeInDown">
+        <div>
+            <div>
+
+                <h1 class="logo-name">MU+</h1>
+
+            </div>
+            <h3>Merlion University</h3>
+            <p>Welcome to BIOS (Bidding Online System).
+            </p>
+            <p>Login to see it in action.</p>
+            <form class="m-t" role="form" method='POST' action='Login.php'>
+                <div class="form-group">
+                    <input type="text" name="userid" class="form-control" placeholder="Username" required="">
+                </div>
+                <div class="form-group">
+                    <input type="password" name="password" class="form-control" placeholder="Password" required="">
+                </div>
+                <button type="submit" class="btn btn-primary block full-width m-b">Login</button>
+
+            </form>
+            <p class="m-t"> <small>G8T6 - Ellesse101@ &copy; 2019</small> </p>
+        </div>
+    </div>
+
+    <!-- Mainly scripts -->
+    <script src="js\jquery-3.1.1.min.js"></script>
+    <script src="js\bootstrap.min.js"></script>
+
+</body>
+
 </html>
