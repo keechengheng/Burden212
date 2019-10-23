@@ -1,6 +1,7 @@
 <?php
-// screen to view bid (amount, course, section) 
+// screen to view sectionid, sectionid, day, class time and exam time 
 require_once 'include/common.php';
+
 if(isset($_SESSION['userid']) && $_SESSION['userid'] != 'Admin'){
     $dao = new StudentDAO();
     $user = $dao->retrieve($_SESSION['userid']);
@@ -9,16 +10,10 @@ else{
     header("Location: Login.php?error=Unauthorized Access");
     return;
 }
-$student = $_SESSION['userid'];
-$dao = new BidDAO();
-$results = $dao->retrieveBids($student);
-$_SESSION['trigger'] = "Drop";
-$currentAmountSpent = 0;
 
-    foreach($results as $element){
-        //calculate total Amount Spent
-        $currentAmountSpent = $currentAmountSpent + $element->amount;
-    }
+$dao = new SectionDAO();
+$results = $dao->retrieveAll();
+$_SESSION['trigger'] = "Insert";
    
 ?>
 <!DOCTYPE html>
@@ -29,21 +24,24 @@ $currentAmountSpent = 0;
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Merlion University | Manage My Bids</title>
+    <title>Merlion University | View all Classes</title>
 
     <link href="css\bootstrap.min.css" rel="stylesheet">
     <link href="font-awesome\css\font-awesome.css" rel="stylesheet">
-    <link href="css\plugins\iCheck\custom.css" rel="stylesheet">
+
+    <link href="css\plugins\dataTables\datatables.min.css" rel="stylesheet">
+
     <link href="css\animate.css" rel="stylesheet">
     <link href="css\style.css" rel="stylesheet">
 
 </head>
 
 <body>
-    <!-- body start-->
+
     <div id="wrapper">
-   <!-- open navigation-->
-   <nav class="navbar-default navbar-static-side" role="navigation">
+
+    <!-- open navigation-->
+    <nav class="navbar-default navbar-static-side" role="navigation">
             <div class="sidebar-collapse">
                 <ul class="nav metismenu" id="side-menu">
                     <li class="nav-header">
@@ -65,10 +63,10 @@ $currentAmountSpent = 0;
                     <li >
                         <a href="StudentPage.php"><i class="fa fa-th-large"></i> <span class="nav-label">Dashboard</span></a>
                     </li>
-                    <li >
+                    <li class="active">
                         <a href="ViewClasses.php"><i class="fa fa-laptop"></i> <span class="nav-label">View Classes</span></a>
                     </li>
-                    <li class="active">
+                    <li >
                         <a href="ManageBids.php"><i class="fa fa-edit"></i> <span class="nav-label">Manage My Bids</span></a>
                     </li>
                     
@@ -101,16 +99,18 @@ $currentAmountSpent = 0;
                 </nav>
             </div>
             <!-- nav bar top close-->
+
+        
+       
             <div class="row wrapper border-bottom white-bg page-heading">
                 <div class="col-lg-10">
-                    <h2>Current Bids</h2>
+                    <h2>View all Classes</h2>
                     <ol class="breadcrumb">
                         <li>
-                            <a href="index.htm">Home</a>
+                            <a href="StudentPage.php">Home</a>
                         </li>
-                        
                         <li class="active">
-                            <strong>Manage My Bids</strong>
+                            <strong>Available Classes</strong>
                         </li>
                     </ol>
                 </div>
@@ -120,48 +120,63 @@ $currentAmountSpent = 0;
             </div>
         <div class="wrapper wrapper-content animated fadeInRight">
             <div class="row">
-            <div class="col-lg-6">
+                <div class="col-lg-12">
                 <div class="ibox float-e-margins">
                     <div class="ibox-title">
-                        <h5>My Current Bids</h5>
+                        <h5>Detailed Listing of all Course and Sections</h5>
                         
                     </div>
                     <div class="ibox-content">
 
-                        <table class="table">
-                            <thead>
-                            <tr>
-                                <th>S/N</th>
-                                <th>Course</th>
-                                <th>Section</th>
-                                <th>Amount</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <?php            
-                            for ($i = 1; $i <= count($results); $i++) {
-                                $bid = $results[$i-1];
-                                echo "
-                                <tr>
-                                    <td>$i</td>
-                                    <td>$bid->courseid</td>
-                                    <td>$bid->section</td>
-                                    <td>$bid->amount</td>
-                                </tr>
-                                "; 
+                        <div class="table-responsive">
+                    <table class="table table-striped table-bordered table-hover dataTables-example">
+                    <thead>
+                    <tr>
+                            <th>S/N</th>
+                            <th>Course</th>
+                            <th>Section</th>
+                            <th>Day</th>  
+                            <th>Start</th>
+                            <th>End</th>
+                            <th>Instructor</th>
+                            <th>Venue</th>
+                            <th>Size</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                                <?php            
+                                for ($i = 1; $i <= count($results); $i++) {
+                                    $section = $results[$i-1];
+                                    echo "
+                                    <tr>
+                                        <td>$i</td>
+                                        <td>$section->courseid</td>
+                                        <td>$section->sectionid</td>
+                                        <td>$section->day</td>
+                                        <td>$section->start</td>
+                                        <td>$section->end</td>
+                                        <td>$section->instructor</td>
+                                        <td>$section->venue</td>
+                                        <td>$section->size</td>
+                                    </tr>
+                                    ";
                                 
-                            }
-                    ?>
-                            </tbody>
-                        </table>
+                                        }
+                                ?>  
+                    </tbody>
+                    </table>
+                        </div>
 
                     </div>
                 </div>
             </div>
+            </div>
+            <div class="row">
+            
             <div class="col-lg-6">
                     <div class="ibox float-e-margins">
                         <div class="ibox-title">
-                            <h5>Drop Bid</h5>
+                            <h5>Insert Bid</h5>
                             
                         </div>
                         <div class="ibox-content">
@@ -175,10 +190,13 @@ $currentAmountSpent = 0;
                                 <div class="form-group"><label class="col-lg-2 control-label">Section</label>
                                     <div class="col-lg-10"><input type="text" name="section" placeholder="Section" class="form-control"></div>
                                 </div>
+                                <div class="form-group"><label class="col-lg-2 control-label">Bid Amount</label>
+                                    <div class="col-lg-10"><input type="text" name="amount" placeholder="Bid Amount" class="form-control"></div>
+                                </div>
                                 
                                 <div class="form-group">
                                     <div class="col-lg-offset-2 col-lg-10">
-                                        <button class="btn btn-sm btn-white" type="submit">Drop Bid</button>
+                                        <button class="btn btn-sm btn-white" type="submit">Insert Bid</button>
                                     </div>
                                 </div>
                             </form>
@@ -186,9 +204,12 @@ $currentAmountSpent = 0;
                     </div>
                 </div>
             </div>
-            
-            
         </div>
+        
+           
+            
+            
+        
         <div class="footer">
                 <div class="pull-right">
                     Clean Dashboard
@@ -196,7 +217,7 @@ $currentAmountSpent = 0;
                 <div>
                     <strong>Copyright</strong> G8T6 &copy; 2019
                 </div>
-            </div>
+        </div>
 
         </div>
         </div>
@@ -209,28 +230,44 @@ $currentAmountSpent = 0;
     <script src="js\plugins\metisMenu\jquery.metisMenu.js"></script>
     <script src="js\plugins\slimscroll\jquery.slimscroll.min.js"></script>
 
-    <!-- Peity -->
-    <script src="js\plugins\peity\jquery.peity.min.js"></script>
+    <script src="js\plugins\dataTables\datatables.min.js"></script>
 
     <!-- Custom and plugin javascript -->
     <script src="js\inspinia.js"></script>
     <script src="js\plugins\pace\pace.min.js"></script>
 
-    <!-- iCheck -->
-    <script src="js\plugins\iCheck\icheck.min.js"></script>
-
-    <!-- Peity -->
-    <script src="js\demo\peity-demo.js"></script>
-
+    <!-- Page-Level Scripts -->
     <script>
         $(document).ready(function(){
-            $('.i-checks').iCheck({
-                checkboxClass: 'icheckbox_square-green',
-                radioClass: 'iradio_square-green',
+            $('.dataTables-example').DataTable({
+                pageLength: 25,
+                responsive: true,
+                dom: '<"html5buttons"B>lTfgitp',
+                buttons: [
+                    { extend: 'copy'},
+                    {extend: 'csv'},
+                    {extend: 'excel', title: 'ExampleFile'},
+                    {extend: 'pdf', title: 'ExampleFile'},
+
+                    {extend: 'print',
+                     customize: function (win){
+                            $(win.document.body).addClass('white-bg');
+                            $(win.document.body).css('font-size', '10px');
+
+                            $(win.document.body).find('table')
+                                    .addClass('compact')
+                                    .css('font-size', 'inherit');
+                    }
+                    }
+                ]
+
             });
+
         });
+
     </script>
 
 </body>
 
 </html>
+

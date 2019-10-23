@@ -142,7 +142,7 @@ function insertManualBid()
                 else{
                     //update with new bid amount + new section
                     $BidDAO -> update($user,$amount,$courseid,$section);
-                    header("Location: ViewBid.php");
+                    header("Location: ManageBids.php");
                 }
             }
             else{
@@ -155,7 +155,7 @@ function insertManualBid()
                     //update with new bid amount
                     $newBid = new Bid($user,$amount,$courseid,$section);
                     $BidDAO->add( $newBid );
-                    header("Location: ViewBid.php");
+                    header("Location: ManageBids.php");
                 }
             }
         }
@@ -201,7 +201,7 @@ function dropManualBid()
         if (isEmpty($encountered_Error['message'])){
             $newBid = new Bid($user,$amount,$courseid,$section);
             $BidDAO->drop($newBid);
-            header("Location: ViewBid.php");
+            header("Location: ManageBids.php");
             }
             else{
                 $errors = $encountered_Error;

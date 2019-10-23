@@ -59,10 +59,10 @@ $user = $_SESSION['userid'];
                             MU+
                         </div>
                     </li>
-                    <li class="active">
+                    <li >
                         <a href="AdminPage.php"><i class="fa fa-th-large"></i> <span class="nav-label">Dashboard</span></a>
                     </li>
-                    <li >
+                    <li class="active">
                         <a href="bootstrap.php"><i class="fa fa-laptop"></i> <span class="nav-label">Bootstrap</span></a>
                     </li>
                     

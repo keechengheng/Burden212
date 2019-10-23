@@ -53,7 +53,8 @@ else{
         }
     }
 
-    
+    $dao = new BidDAO();
+    $results = $dao->retrieveBids($_SESSION['userid']);
   
     $BidDAO = new BidDAO();
     $retrieveBids = $BidDAO->retrieveBids($user->userid); //retrieve previous confirmed bids
@@ -114,10 +115,10 @@ else{
                         <a href="StudentPage.php"><i class="fa fa-th-large"></i> <span class="nav-label">Dashboard</span></a>
                     </li>
                     <li >
-                        <a href="ManageBids.php"><i class="fa fa-laptop"></i> <span class="nav-label">Manage Bids</span></a>
+                        <a href="ViewClasses.php"><i class="fa fa-laptop"></i> <span class="nav-label">View Classes</span></a>
                     </li>
                     <li >
-                        <a href="ViewBid.php"><i class="fa fa-laptop"></i> <span class="nav-label">View current Bids</span></a>
+                        <a href="ManageBids.php"><i class="fa fa-edit"></i> <span class="nav-label">Manage My Bids</span></a>
                     </li>
                     
                 </ul>
@@ -192,7 +193,7 @@ else{
                             <div class="ibox float-e-margins">
                                 <div class="ibox-title">
                                     <span class="label label-success pull-right">Sum</span>
-                                    <h5>Reserved / Total credits</h5>
+                                    <h5>Reserved / Total Available credits</h5>
                                 </div>
                                 <div class="ibox-content">
                                     <h1 class="no-margins"><?=$currentAmountSpent?> / <?=$user->edollar?></h1>
@@ -203,6 +204,44 @@ else{
                     </div>
                     <div class="row animated fadeInRight">
                     <div class="col-lg-6">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>My Current Bids</h5>
+                        
+                    </div>
+                    <div class="ibox-content">
+
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>S/N</th>
+                                <th>Course</th>
+                                <th>Section</th>
+                                <th>Amount</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <?php            
+                            for ($i = 1; $i <= count($results); $i++) {
+                                $bid = $results[$i-1];
+                                echo "
+                                <tr>
+                                    <td>$i</td>
+                                    <td>$bid->courseid</td>
+                                    <td>$bid->section</td>
+                                    <td>$bid->amount</td>
+                                </tr>
+                                "; 
+                                
+                            }
+                    ?>
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
                 <div class="ibox float-e-margins">
                     <div class="ibox-title">
                         <h5>Bidding Results</h5>
