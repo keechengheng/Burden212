@@ -14,6 +14,9 @@ else{
 $dao = new SectionDAO();
 $results = $dao->retrieveAll();
 $_SESSION['trigger'] = "Insert";
+
+$dao = new BidDAO();
+$retriveBid = $dao->retrieveBids($_SESSION['userid']);
    
 ?>
 <!DOCTYPE html>
@@ -24,7 +27,7 @@ $_SESSION['trigger'] = "Insert";
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Merlion University | View all Classes</title>
+    <title>Merlion University | Live Bidding</title>
 
     <link href="css\bootstrap.min.css" rel="stylesheet">
     <link href="font-awesome\css\font-awesome.css" rel="stylesheet">
@@ -63,10 +66,10 @@ $_SESSION['trigger'] = "Insert";
                     <li >
                         <a href="StudentPage.php"><i class="fa fa-th-large"></i> <span class="nav-label">Dashboard</span></a>
                     </li>
-                    <li class="active">
+                    <li >
                         <a href="ViewClasses.php"><i class="fa fa-laptop"></i> <span class="nav-label">View Classes</span></a>
                     </li>
-                    <li >
+                    <li class="active">
                         <a href="LiveBidding.php"><i class="fa fa-laptop"></i> <span class="nav-label">Live Bidding</span></a>
                     </li>
                     <li >
@@ -107,13 +110,13 @@ $_SESSION['trigger'] = "Insert";
        
             <div class="row wrapper border-bottom white-bg page-heading">
                 <div class="col-lg-10">
-                    <h2>View all Classes</h2>
+                    <h2>Round 2 Live Bidding - Open</h2>
                     <ol class="breadcrumb">
                         <li>
                             <a href="StudentPage.php">Home</a>
                         </li>
                         <li class="active">
-                            <strong>Available Classes</strong>
+                            <strong>Live Bidding</strong>
                         </li>
                     </ol>
                 </div>
@@ -143,7 +146,8 @@ $_SESSION['trigger'] = "Insert";
                             <th>End</th>
                             <th>Instructor</th>
                             <th>Venue</th>
-                            <th>Size</th>
+                            <th>Available Seats</th>
+                            <th>Min Bid</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -161,6 +165,7 @@ $_SESSION['trigger'] = "Insert";
                                         <td>$section->instructor</td>
                                         <td>$section->venue</td>
                                         <td>$section->size</td>
+                                        <td>10</td>
                                     </tr>
                                     ";
                                 
@@ -183,7 +188,7 @@ $_SESSION['trigger'] = "Insert";
                             
                         </div>
                         <div class="ibox-content">
-                            <form method="POST" action="Bid-process.php" class="form-horizontal">
+                            <form method="POST" action="LiveBidding-process.php" class="form-horizontal">
                                 
                                 <div class="form-group"><label class="col-lg-2 control-label">Course</label>
 
@@ -221,6 +226,7 @@ $_SESSION['trigger'] = "Insert";
                                 <th>Course</th>
                                 <th>Section</th>
                                 <th>Amount</th>
+                                <th>Status</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -233,6 +239,7 @@ $_SESSION['trigger'] = "Insert";
                                     <td>$bid->courseid</td>
                                     <td>$bid->section</td>
                                     <td>$bid->amount</td>
+                                    <td>Pending</td>
                                 </tr>
                                 "; 
                                 

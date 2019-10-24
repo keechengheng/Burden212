@@ -57,7 +57,7 @@ class SectionDAO {
         $stmt->execute();
         
         while ($row =$stmt->fetch()){
-            return new Section ($row['courseid'],$row['section'], $row['day'],$row['start'],$row['end'],$row['instructor'],$row['venue'],$row['size']);
+            return new Section ($row['courseid'],$row['section'], $row['day'],$row['start'],$row['end'],$row['instructor'],$row['venue'],$row['size'],$row['minbid']);
         }
 
     }
@@ -90,7 +90,7 @@ class SectionDAO {
         while ($row = $stmt->fetch()) {
             $sectionAll[] = new Section($row['courseid'], $row['section'], $row['day'], 
                                     $row['start'],$row['end'],$row['instructor'],
-                                    $row['venue'],$row['size']);
+                                    $row['venue'],$row['size'],$row['minbid']);
            
         }
         return $sectionAll;
@@ -108,7 +108,7 @@ class SectionDAO {
         while ($row = $stmt->fetch()) {
             $sectionAll[] = ["course" => $row['courseid'], "section" => $row['section'], "day" => (int)$row['day'], 
                                 "start" => $row['start'], "end" => $row['end'], "instructor" => $row['instructor'],
-                                "venue" => $row['venue'], "size" => (int)$row['size']];
+                                "venue" => $row['venue'], "size" => (int)$row['size'],"minbid" => (int)$row['minbid']];
            
         }
         return $sectionAll;

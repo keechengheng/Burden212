@@ -229,7 +229,7 @@ CREATE TABLE `bidding_results` (
   `courseid` varchar(10) NOT NULL,
   `section` varchar(10) NOT NULL,
   `round` int(11) NOT NULL,
-  `datetime` datetime NOT NULL,
+  `dtvalue` datetime NOT NULL,
   `amount` int(11) NOT NULL,
   `status` varchar(45) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -359,7 +359,8 @@ CREATE TABLE `section` (
   `end` time NOT NULL,
   `instructor` varchar(100) NOT NULL,
   `venue` varchar(100) NOT NULL,
-  `size` int(11) NOT NULL
+  `size` int(11) NOT NULL,
+  `minbid` int(11) NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -464,7 +465,7 @@ ALTER TABLE `bid`
 -- Indexes for table `bidding_results`
 --
 ALTER TABLE `bidding_results`
-  ADD PRIMARY KEY (`userid`,`courseid`,`section`,`round`,`datetime`);
+  ADD PRIMARY KEY (`userid`,`courseid`,`section`,`round`,`dtvalue`);
 
 --
 -- Indexes for table `course`

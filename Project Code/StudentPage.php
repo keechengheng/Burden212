@@ -66,7 +66,7 @@ else{
     }
     $balanceCredits = $user->edollar - $currentAmountSpent ;
     $BiddingResultsDAO = new BiddingResultsDAO();
-    $retrieveResults = $BiddingResultsDAO->retrieveBids($user->userid); //retrieve previous confirmed bids
+    $retrieveResults = $BiddingResultsDAO->retrieveLatestResult($user->userid, $round,$round[1]); 
     
 
 ?>
@@ -116,6 +116,9 @@ else{
                     </li>
                     <li >
                         <a href="ViewClasses.php"><i class="fa fa-laptop"></i> <span class="nav-label">View Classes</span></a>
+                    </li>
+                    <li >
+                        <a href="LiveBidding.php"><i class="fa fa-laptop"></i> <span class="nav-label">Live Bidding</span></a>
                     </li>
                     <li >
                         <a href="ManageBids.php"><i class="fa fa-edit"></i> <span class="nav-label">Manage My Bids</span></a>

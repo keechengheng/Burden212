@@ -6,16 +6,16 @@ class BiddingResults {
     public $courseid;
     public $section;
     public $round;
-    public $datetime;
+    public $dtvalue;
     public $amount;
     public $status;
     
-    public function __construct($userid='', $courseid='', $section='', $round='', $datetime='', $amount='',$status='') {
+    public function __construct($userid='', $courseid='', $section='', $round='', $dtvalue='', $amount='',$status='') {
         $this->userid = $userid;
         $this->courseid = $courseid;
         $this->section = $section;
         $this->round = $round;
-        $this->datetime = $datetime;
+        $this->dtvalue = $dtvalue;
         $this->amount = $amount;
         $this->status = $status;
     }

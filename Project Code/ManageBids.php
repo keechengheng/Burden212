@@ -68,6 +68,9 @@ $currentAmountSpent = 0;
                     <li >
                         <a href="ViewClasses.php"><i class="fa fa-laptop"></i> <span class="nav-label">View Classes</span></a>
                     </li>
+                    <li >
+                        <a href="LiveBidding.php"><i class="fa fa-laptop"></i> <span class="nav-label">Live Bidding</span></a>
+                    </li>
                     <li class="active">
                         <a href="ManageBids.php"><i class="fa fa-edit"></i> <span class="nav-label">Manage My Bids</span></a>
                     </li>

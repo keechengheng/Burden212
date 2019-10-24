@@ -42,7 +42,7 @@ if ( isset($_GET['error']) ) {
             return;
 
         } else {
-            $error = 'Password!';
+            $error = 'Incorrect Password!';
         }
     }
 
@@ -93,6 +93,10 @@ if ( isset($_GET['error']) ) {
                 <button type="submit" class="btn btn-primary block full-width m-b">Login</button>
 
             </form>
+            <p style="color:red">
+            <?=$error?>
+
+        </p>
             <p class="m-t"> <small>G8T6 - Ellesse101@ &copy; 2019</small> </p>
         </div>
     </div>
