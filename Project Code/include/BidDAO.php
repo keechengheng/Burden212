@@ -236,7 +236,7 @@ class BidDAO {
     
         if( sizeof($sectionBids) <= $size ){
             #update student bids to all success
-            $sql = "INSERT IGNORE INTO bidding_results (userid, courseid, section, round, datetime, amount, status) VALUES (:userid, :courseid, :section, :round, :datetime, :amount, :status)";
+            $sql = "INSERT IGNORE INTO bidding_results (userid, courseid, section, round, dtvalue, amount, status) VALUES (:userid, :courseid, :section, :round, :dtvalue, :amount, :status)";
     
             $connMgr = new ConnectionManager();      
             $conn = $connMgr->getConnection();
@@ -250,7 +250,7 @@ class BidDAO {
                 $stmt->bindParam(':courseid', $bid->courseid, PDO::PARAM_STR);
                 $stmt->bindParam(':section', $bid->section, PDO::PARAM_STR);
                 $stmt->bindParam(':round', $round, PDO::PARAM_INT);
-                $stmt->bindParam(':datetime', $time, PDO::PARAM_STR);
+                $stmt->bindParam(':dtvalue', $time, PDO::PARAM_STR);
                 $stmt->bindParam(':amount', $bid->amount, PDO::PARAM_INT);
                 $stmt->bindParam(':status', $status, PDO::PARAM_STR);
                 
@@ -267,7 +267,7 @@ class BidDAO {
                 $clearingPrice = $sectionBids[$size-1]->amount;
                 $rejectPrice = $sectionBids[$size]->amount;
         
-                $sql = "INSERT IGNORE INTO bidding_results (userid, courseid, section, round, datetime, amount, status) VALUES (:userid, :courseid, :section, :round, :datetime, :amount, :status)";
+                $sql = "INSERT IGNORE INTO bidding_results (userid, courseid, section, round, dtvalue, amount, status) VALUES (:userid, :courseid, :section, :round, :dtvalue, :amount, :status)";
         
                 $connMgr = new ConnectionManager();      
                 $conn = $connMgr->getConnection();
@@ -290,7 +290,7 @@ class BidDAO {
                             $stmt->bindParam(':courseid', $bid->courseid, PDO::PARAM_STR);
                             $stmt->bindParam(':section', $bid->section, PDO::PARAM_STR);
                             $stmt->bindParam(':round', $round, PDO::PARAM_INT);
-                            $stmt->bindParam(':datetime', $time, PDO::PARAM_STR);
+                            $stmt->bindParam(':dtvalue', $time, PDO::PARAM_STR);
                             $stmt->bindParam(':amount', $bid->amount, PDO::PARAM_INT);
                             $stmt->bindParam(':status', $status, PDO::PARAM_STR);
                             
@@ -303,7 +303,7 @@ class BidDAO {
                             $stmt->bindParam(':userid', $bid->userid, PDO::PARAM_STR);
                             $stmt->bindParam(':courseid', $bid->courseid, PDO::PARAM_STR);
                             $stmt->bindParam(':section', $bid->section, PDO::PARAM_STR);
-                            $stmt->bindParam(':datetime', $time, PDO::PARAM_STR);
+                            $stmt->bindParam(':dtvalue', $time, PDO::PARAM_STR);
                             $stmt->bindParam(':amount', $bid->amount, PDO::PARAM_INT);
                             $stmt->bindParam(':status', $status, PDO::PARAM_STR);
                             
@@ -314,7 +314,7 @@ class BidDAO {
                             $stmt->bindParam(':userid', $bid->userid, PDO::PARAM_STR);
                             $stmt->bindParam(':courseid', $bid->courseid, PDO::PARAM_STR);
                             $stmt->bindParam(':section', $bid->section, PDO::PARAM_STR);
-                            $stmt->bindParam(':datetime', $time, PDO::PARAM_STR);
+                            $stmt->bindParam(':dtvalue', $time, PDO::PARAM_STR);
                             $stmt->bindParam(':amount', $bid->amount, PDO::PARAM_INT);
                             $stmt->bindParam(':status', $status, PDO::PARAM_STR);
                             
@@ -336,7 +336,7 @@ class BidDAO {
                             $stmt->bindParam(':userid', $bid->userid, PDO::PARAM_STR);
                             $stmt->bindParam(':courseid', $bid->courseid, PDO::PARAM_STR);
                             $stmt->bindParam(':section', $bid->section, PDO::PARAM_STR);
-                            $stmt->bindParam(':datetime', $time, PDO::PARAM_STR);
+                            $stmt->bindParam(':dtvalue', $time, PDO::PARAM_STR);
                             $stmt->bindParam(':amount', $bid->amount, PDO::PARAM_INT);
                             $stmt->bindParam(':status', $status , PDO::PARAM_STR);
                             
@@ -347,7 +347,7 @@ class BidDAO {
                             $stmt->bindParam(':userid', $bid->userid, PDO::PARAM_STR);
                             $stmt->bindParam(':courseid', $bid->courseid, PDO::PARAM_STR);
                             $stmt->bindParam(':section', $bid->section, PDO::PARAM_STR);
-                            $stmt->bindParam(':datetime', $time, PDO::PARAM_STR);
+                            $stmt->bindParam(':dtvalue', $time, PDO::PARAM_STR);
                             $stmt->bindParam(':amount', $bid->amount, PDO::PARAM_INT);
                             $stmt->bindParam(':status', $status, PDO::PARAM_STR);
                             
