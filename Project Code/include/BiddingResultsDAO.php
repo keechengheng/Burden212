@@ -67,7 +67,7 @@ class BiddingResultsDAO {
         //2 - if open, show distinct latest. 
         // status 0 = close, 1 = open
         
-        $sql = "SELECT DISTINCT dtvalue FROM bidding_results ORDER BY DISTINCT DESC";
+        $sql = "SELECT DISTINCT dtvalue FROM bidding_results ORDER BY dtvalue DESC";
         $connMgr = new ConnectionManager();
         $conn = $connMgr->getConnection();
         $stmt = $conn->prepare($sql);
