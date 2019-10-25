@@ -17,6 +17,17 @@ $_SESSION['trigger'] = "Insert";
 
 $dao = new BidDAO();
 $retriveBid = $dao->retrieveBids($_SESSION['userid']);
+
+$roundDAO = new RoundDAO();
+$round = $roundDAO ->retrieveRound();
+if ($round[0]!= "2"){
+    $status = "disabled";
+    $message = "Live Bidding - Not Available, function will only be available in Round 2.";
+}
+else{
+    $status ="";
+    $message = "Live Bidding - Open";
+}
    
 ?>
 <!DOCTYPE html>
@@ -110,7 +121,7 @@ $retriveBid = $dao->retrieveBids($_SESSION['userid']);
        
             <div class="row wrapper border-bottom white-bg page-heading">
                 <div class="col-lg-10">
-                    <h2>Round 2 Live Bidding - Open</h2>
+                    <h2><?= $message ?></h2>
                     <ol class="breadcrumb">
                         <li>
                             <a href="StudentPage.php">Home</a>
@@ -204,7 +215,7 @@ $retriveBid = $dao->retrieveBids($_SESSION['userid']);
                                 
                                 <div class="form-group">
                                     <div class="col-lg-offset-2 col-lg-10">
-                                        <button class="btn btn-sm btn-white" type="submit">Insert Bid</button>
+                                        <button type="submit" class="btn btn-sm btn-warning" <?= $status ?>>Insert Bid</button>
                                     </div>
                                 </div>
                             </form>

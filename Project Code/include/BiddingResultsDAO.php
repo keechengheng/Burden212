@@ -73,12 +73,12 @@ class BiddingResultsDAO {
         $stmt = $conn->prepare($sql);
         $stmt->setFetchMode(PDO::FETCH_ASSOC);
         $stmt->execute();
+        $studentBid = [];
         while ($row =$stmt->fetch()){
             $dtRound[] = [$row['dtvalue']];
         }
-
         if ($round == 0 && count($dtRound)>=2){
-            $selectedRound = $dtRound[1];
+            $selectedRound = $dtRound[0];
         }
         elseif ($round == 1 && $status == 0 ){
             $selectedRound = $dtRound[0];
@@ -87,17 +87,15 @@ class BiddingResultsDAO {
             $selectedRound = $dtRound[0];
         }
         else{
-            $selectedRound = "0";
+            return $studentBid; 
         }
-
-        $sql = 'select * from bidding_results where userid=:userid and dtvalue=:dtvalue';
         
+        $sql = 'select * from bidding_results where userid=:userid and dtvalue=:dtvalue';
         $stmt = $conn->prepare($sql);
         $stmt->bindParam(':userid', $student, PDO::PARAM_STR);
-        $stmt->bindParam(':dtvalue', $selectedRound, PDO::PARAM_STR);
+        $stmt->bindParam(':dtvalue', $selectedRound[0], PDO::PARAM_STR);
         $stmt->execute();
-        
-        $studentBid = [];
+         
         $stmt->setFetchMode(PDO::FETCH_ASSOC);
         while ($row =$stmt->fetch()){
             $studentBid[]= new BiddingResults ($row['userid'],$row['courseid'],$row['section'],$row['round'],$row['dtvalue'],$row['amount'],$row['status']);

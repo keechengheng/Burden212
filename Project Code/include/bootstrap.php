@@ -110,6 +110,10 @@ function doBootstrap() {
 				}
 			}
 			else {
+				//trigger round 1 to begin
+				$roundDAO = new RoundDAO();
+				$roundDAO ->activateRoundOne();
+				
 				$connMgr = new ConnectionManager();
 				$conn = $connMgr->getConnection();
 
@@ -605,7 +609,7 @@ function doBootstrap() {
 					$retrieveBids = $BidDAO->retrieveBids($data[0]); //retrieve previous confirmed bids
 
 					//"not own school course"
-					if ($_SESSION['round']=="0"){
+					if ($_SESSION['round']=="0" || $_SESSION['round']=="1"){
 						$studentObj = $StudentDAO->retrieve($data[0]);
 						$courseObj = $CourseDAO->retrieveSchool($data[2]);
 						if ($studentObj->school != $courseObj){
@@ -780,7 +784,5 @@ function doBootstrap() {
 	
 }
 
-//trigger round 1 to begin
-$roundDAO = new RoundDAO();
-$roundDAO ->activateRoundOne();
+
 ?>

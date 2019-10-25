@@ -14,6 +14,15 @@ else{
 $dao = new SectionDAO();
 $results = $dao->retrieveAll();
 $_SESSION['trigger'] = "Insert";
+
+$roundDAO = new RoundDAO();
+$round = $roundDAO ->retrieveRound();
+if ($round[1]=="0"){
+    $status = "disabled";
+}
+else{
+    $status ="";
+}
    
 ?>
 <!DOCTYPE html>
@@ -199,7 +208,7 @@ $_SESSION['trigger'] = "Insert";
                                 
                                 <div class="form-group">
                                     <div class="col-lg-offset-2 col-lg-10">
-                                        <button class="btn btn-sm btn-white" type="submit">Insert Bid</button>
+                                        <button  type="submit" class="btn btn-sm btn-warning" <?= $status ?>>Insert Bid</button>
                                     </div>
                                 </div>
                             </form>

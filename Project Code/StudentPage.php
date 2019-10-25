@@ -66,7 +66,7 @@ else{
     }
     $balanceCredits = $user->edollar - $currentAmountSpent ;
     $BiddingResultsDAO = new BiddingResultsDAO();
-    $retrieveResults = $BiddingResultsDAO->retrieveLatestResult($user->userid, $round,$round[1]); 
+    $retrieveResults = $BiddingResultsDAO->retrieveLatestResult($user->userid, $round[0],$round[1]); 
     
 
 ?>
@@ -164,7 +164,7 @@ else{
                                 </div>
                                 <div class="ibox-content">
                                     <h1 class="no-margins"><?= $roundNumber ?></h1>
-                                    <small>Round</small>
+                                    <small>Round - <?= $statusMessage ?></small>
                                 </div>
                             </div>
                         </div>
