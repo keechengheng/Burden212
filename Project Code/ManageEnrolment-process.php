@@ -9,9 +9,19 @@ else{
     header("Location: Login.php?error=Unauthorized Access");
     return;
 }
-$courseid = $_POST['courseid'];
-$section = $_POST['section'];
-$BiddingResultsDAO = new BiddingResultsDAO();
-$retrieveResults = $BiddingResultsDAO->dropSection($user->userid,$courseid,$section);
+
+
+//insert validation for drop logic
+function dropSection(){
+    $courseid = $_POST['courseid'];
+    $section = $_POST['section'];
+    $user = $_SESSION['userid'];
+    $BiddingResultsDAO = new BiddingResultsDAO();
+    $BiddingResultsDAO->dropSection($user,$courseid,$section);
+    header("Location: ManageEnrolment.php");
+}
+
+dropSection();
+
 
 ?>

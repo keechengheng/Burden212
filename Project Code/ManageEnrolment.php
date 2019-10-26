@@ -14,6 +14,8 @@ $dao = new BidDAO();
 $results = $dao->retrieveBids($student);
 $_SESSION['trigger'] = "Drop";
 $currentAmountSpent = 0;
+$roundDAO = new RoundDAO();
+$round = $roundDAO ->retrieveRound();
 
     foreach($results as $element){
         //calculate total Amount Spent
