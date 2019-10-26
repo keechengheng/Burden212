@@ -59,6 +59,25 @@ class BiddingResultsDAO {
         return $studentBid; 
     }
 
+    public function dropSection($student,$course,$section) {
+        $sql = 'UPDATE bidding_results SET status="DROPPED" WHERE userid=:userid AND courseid=:course AND section=:section AND status="SUCCESSFUL"';
+        
+        $connMgr = new ConnectionManager();      
+        $conn = $connMgr->getConnection();
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':userid', $student, PDO::PARAM_STR);
+        $stmt->bindParam(':course', $course, PDO::PARAM_STR);
+        $stmt->bindParam(':section', $section, PDO::PARAM_STR);
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+        $stmt->execute();
+        
+        $isUpdateOk = False;
+        if ($stmt->execute()) {
+            $isUpdateOk = True;
+        }
+        return $isUpdateOk;
+    }
+
     //retrieving bid results for specific round
     public function retrieveLatestResult($student,$round,$status) {
         //determine current round. 

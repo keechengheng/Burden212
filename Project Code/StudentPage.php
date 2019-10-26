@@ -53,10 +53,8 @@ else{
         }
     }
 
-    $dao = new BidDAO();
-    $results = $dao->retrieveBids($_SESSION['userid']);
-  
     $BidDAO = new BidDAO();
+    $results = $BidDAO->retrieveBids($_SESSION['userid']);
     $retrieveBids = $BidDAO->retrieveBids($user->userid); //retrieve previous confirmed bids
     $currentAmountSpent = 0;
 

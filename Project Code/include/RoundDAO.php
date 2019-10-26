@@ -96,7 +96,7 @@ class RoundDAO {
 
 
             $bidDAO = new BidDAO();
-            $size = $bidDAO->processBID($sectionBids, $item[0], $item[1], 1); #Incomplete function
+            $size = $bidDAO->processBID($sectionBids, $item[0], $item[1], 1);
 
             $sql = "UPDATE section set size = :size where section = :section and courseid = :courseid";
     
