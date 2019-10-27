@@ -22,6 +22,19 @@ function checkMinBid(){
     }
 }
 
+function updateMinBid($courseid,$section,$amount){
+    //retrieve current minbid
+    $sectionDAO = new SectionDAO();
+    $retrievedBid = $sectionDAO->retrieveByCourseSection($courseid,$section);  
+    $currentMinBid = $retrievedBid ->minbid;
+    $bidDAO = new BidDAO();
+    $consolidatedBids = $bidDAO->round2SlotsRemaining($courseid,$section,$retrievedBid->size);
+    $slotsRemain = ($retrievedBid->size) - count($consolidatedBids);
+    if ($slotsRemain == 0 && $amount+1 >$currentMinBid){
+        $sectionDAO ->updateMinBid($courseid,$section,$amount+1);
+    }
+}
+
 function round2InsertManualBid(){
     $BidDAO = new BidDAO();
     $CourseDAO = new CourseDAO();
@@ -146,6 +159,7 @@ function round2InsertManualBid(){
                 else{
                     //update with new bid amount + new section
                     $BidDAO -> update($user,$amount,$courseid,$section);
+                    updateMinBid($courseid,$section,$amount);
                     header("Location: LiveBidding.php");
                 }
             }
@@ -159,6 +173,7 @@ function round2InsertManualBid(){
                     //update with new bid amount
                     $newBid = new Bid($user,$amount,$courseid,$section);
                     $BidDAO->add( $newBid );
+                    updateMinBid($courseid,$section,$amount);
                     header("Location: LiveBidding.php");
                 }
             }

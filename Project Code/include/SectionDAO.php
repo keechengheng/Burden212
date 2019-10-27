@@ -121,5 +121,16 @@ class SectionDAO {
         $stmt = $conn->prepare($sql);
         $stmt->execute();
     }
+
+    public function updateMinBid($courseid,$section,$amount) {
+        $connMgr = new ConnectionManager();      
+        $conn = $connMgr->getConnection();
+        $sql = "UPDATE section set minbid =:amount where courseid=:course and section=:section";
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':course', $courseid, PDO::PARAM_STR);
+        $stmt->bindParam(':section', $section, PDO::PARAM_STR);
+        $stmt->bindParam(':amount', $amount, PDO::PARAM_STR);
+        $stmt->execute();
+    }
 }
 
