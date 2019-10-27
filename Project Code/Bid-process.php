@@ -13,7 +13,7 @@ function checkMinBid(){
     $amount = $_POST['amount'];
     $sectionDAO = new SectionDAO();
     $selectedSection = $sectionDAO->retrieveByCourseSection($courseid,$section);
-    if($amount >= $selectedSection->minbid){
+    if($amount >= $selectedSection['minbid']){
         round2InsertManualBid();
     }
     else{
@@ -377,6 +377,9 @@ function dropManualBid()
 }
 if ($_SESSION['trigger'] == "Insert"){
     insertManualBid();
+}
+if ($_SESSION['trigger'] == "r2Insert"){
+    checkMinBid();
 }
 if ($_SESSION['trigger'] == "Drop"){
     dropManualBid();

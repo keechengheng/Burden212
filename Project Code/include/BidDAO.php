@@ -216,30 +216,30 @@ class BidDAO {
         $stmt->bindParam(':section', $section, PDO::PARAM_STR);
         $stmt->execute();
         
-        $studentBid = [];
+        $studentBids = [];
         $hold1 = 0;
         $stmt->setFetchMode(PDO::FETCH_ASSOC);
         while ($row =$stmt->fetch()){
             //check to ensure bids are within number of slots available
-            if (count($studentBid) < $slotsLeft){
-                $studentBid[]= new Bid ($row['userid'],$row['amount'],$row['courseid'],$row['section']);
+            if (count($studentBids) < $slotsLeft){
+                $studentBids[]= new Bid ($row['userid'],$row['amount'],$row['courseid'],$row['section']);
                 $hold1 = $row['amount'];
             }
             else{
                 // check if able to accomodate 
                 if ($hold1 == $row['amount']){
-                    $studentBid=[];
+                    $studentBids=[];
                     $stmt->setFetchMode(PDO::FETCH_ASSOC);
                     while ($row =$stmt->fetch()){
                         if ($row['amount']<$hold1){
-                            $studentBid[]= new Bid ($row['userid'],$row['amount'],$row['courseid'],$row['section']);
+                            $studentBids[]= new Bid ($row['userid'],$row['amount'],$row['courseid'],$row['section']);
                         }
-                        return $studentBid;
+                        return $studentBids;
                     }
                 }
             }
         }
-        return $studentBid;
+        return $studentBids;
     }
 
 	

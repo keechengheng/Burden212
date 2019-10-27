@@ -13,10 +13,10 @@ else{
 
 $sectionDAO = new SectionDAO();
 $results = $sectionDAO->retrieveAll();
-$_SESSION['trigger'] = "Insert";
+$_SESSION['trigger'] = "r2Insert";
 
 $bidDAO = new BidDAO();
-$retriveBid = $bidDAO->retrieveBids($_SESSION['userid']);
+$retrieveBid = $bidDAO->retrieveBids($_SESSION['userid']);
 
 $roundDAO = new RoundDAO();
 $round = $roundDAO ->retrieveRound();
@@ -204,7 +204,7 @@ else{
                             
                         </div>
                         <div class="ibox-content">
-                            <form method="POST" action="LiveBidding-process.php" class="form-horizontal">
+                            <form method="POST" action="Bid-process.php" class="form-horizontal">
                                 
                                 <div class="form-group"><label class="col-lg-2 control-label">Course</label>
 
@@ -247,8 +247,8 @@ else{
                             </thead>
                             <tbody>
                             <?php            
-                            for ($i = 1; $i <= count($retriveBid); $i++) {
-                                $bid = $retriveBid[$i-1];
+                            for ($i = 1; $i <= count($retrieveBid); $i++) {
+                                $bid = $retrieveBid[$i-1];
                                 $bidDAO = new BidDAO();
                                 $bidStatus = "Unsuccessful";
                                 $consolidatedBids = $bidDAO->round2SlotsRemaining($item->courseid,$item->sectionid,$item->size);

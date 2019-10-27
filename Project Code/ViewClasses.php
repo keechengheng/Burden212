@@ -15,9 +15,12 @@ $dao = new SectionDAO();
 $results = $dao->retrieveAll();
 $_SESSION['trigger'] = "Insert";
 
+$bidDAO = new BidDAO();
+$retrieveBid = $bidDAO->retrieveBids($_SESSION['userid']);
+
 $roundDAO = new RoundDAO();
 $round = $roundDAO ->retrieveRound();
-if ($round[1]=="0"){
+if ($round[1]=="0" || $round[0]=="2" ){
     $status = "disabled";
 }
 else{
@@ -234,8 +237,8 @@ else{
                             </thead>
                             <tbody>
                             <?php            
-                            for ($i = 1; $i <= count($retriveBid); $i++) {
-                                $bid = $retriveBid[$i-1];
+                            for ($i = 1; $i <= count($retrieveBid); $i++) {
+                                $bid = $retrieveBid[$i-1];
                                 echo "
                                 <tr>
                                     <td>$i</td>
