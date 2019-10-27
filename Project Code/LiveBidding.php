@@ -251,7 +251,7 @@ else{
                                 $bid = $retrieveBid[$i-1];
                                 $bidDAO = new BidDAO();
                                 $bidStatus = "Unsuccessful";
-                                $consolidatedBids = $bidDAO->round2SlotsRemaining($item->courseid,$item->sectionid,$item->size);
+                                $consolidatedBids = $bidDAO->round2SlotsRemaining($bid->courseid,$bid->sectionid,$bid->size);
                                 //i have to check if i am part of the consolidatebids
                                 foreach($consolidatedBids as $successBid){
                                     if($_SESSION['userid'] ==  $successBid['userid']){
