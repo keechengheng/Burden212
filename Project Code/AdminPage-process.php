@@ -10,6 +10,7 @@ $user = $_SESSION['userid'];
 $round = $_SESSION['round'];
 $status = $_SESSION['status'];
 $roundDAO = new RoundDAO();
+$sectionDAO = new SectionDAO();
 
 if ($round == "1" && $status == "1"){
     //insert Round 1 clearing logic here
@@ -17,6 +18,7 @@ if ($round == "1" && $status == "1"){
 }
 else if ($round == "1" && $status == "0" ){
     $roundDAO ->activateRoundTwo();
+    $sectionDAO ->prepareRoundTwo();
 }
 else  if ($round == "2" && $status == "1" ){
     $roundDAO ->closeBid();

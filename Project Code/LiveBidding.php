@@ -11,12 +11,12 @@ else{
     return;
 }
 
-$dao = new SectionDAO();
-$results = $dao->retrieveAll();
+$sectionDAO = new SectionDAO();
+$results = $sectionDAO->retrieveAll();
 $_SESSION['trigger'] = "Insert";
 
-$dao = new BidDAO();
-$retriveBid = $dao->retrieveBids($_SESSION['userid']);
+$bidDAO = new BidDAO();
+$retriveBid = $bidDAO->retrieveBids($_SESSION['userid']);
 
 $roundDAO = new RoundDAO();
 $round = $roundDAO ->retrieveRound();
@@ -157,7 +157,8 @@ else{
                             <th>End</th>
                             <th>Instructor</th>
                             <th>Venue</th>
-                            <th>Available Seats</th>
+                            <th>Total Available Seats</th>
+                            <th>Seats Remaining after qualifying bids</th>
                             <th>Min Bid</th>
                     </tr>
                     </thead>
@@ -165,6 +166,9 @@ else{
                                 <?php            
                                 for ($i = 1; $i <= count($results); $i++) {
                                     $section = $results[$i-1];
+                                    $bidDAO = new BidDAO();
+                                    $consolidatedBids = $bidDAO->round2SlotsRemaining($section->courseid,$section->sectionid,$section->size);
+                                    $slotsRemain = ($section->size) - count($consolidatedBids);
                                     echo "
                                     <tr>
                                         <td>$i</td>
@@ -176,7 +180,8 @@ else{
                                         <td>$section->instructor</td>
                                         <td>$section->venue</td>
                                         <td>$section->size</td>
-                                        <td>10</td>
+                                        <td>$slotsRemain</td>
+                                        <td>$section->minbid</td>
                                     </tr>
                                     ";
                                 
@@ -244,13 +249,23 @@ else{
                             <?php            
                             for ($i = 1; $i <= count($retriveBid); $i++) {
                                 $bid = $retriveBid[$i-1];
+                                $bidDAO = new BidDAO();
+                                $bidStatus = "Unsuccessful";
+                                $consolidatedBids = $bidDAO->round2SlotsRemaining($item->courseid,$item->sectionid,$item->size);
+                                //i have to check if i am part of the consolidatebids
+                                foreach($consolidatedBids as $successBid){
+                                    if($_SESSION['userid'] ==  $successBid['userid']){
+                                        $bidStatus = "Successful";
+                                    }
+                                }                      
+
                                 echo "
                                 <tr>
                                     <td>$i</td>
                                     <td>$bid->courseid</td>
                                     <td>$bid->section</td>
                                     <td>$bid->amount</td>
-                                    <td>Pending</td>
+                                    <td>$bidStatus</td>
                                 </tr>
                                 "; 
                                 

@@ -113,5 +113,13 @@ class SectionDAO {
         }
         return $sectionAll;
     }
+
+    public function prepareRoundTwo() {
+        $connMgr = new ConnectionManager();      
+        $conn = $connMgr->getConnection();
+        $sql = "UPDATE section set minbid ='10' ";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+    }
 }
 

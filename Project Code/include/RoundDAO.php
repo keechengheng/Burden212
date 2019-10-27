@@ -115,46 +115,6 @@ class RoundDAO {
         return $isUpdateOk;
     }
 
-    public function prepareRoundTwo(){
-        //process all bids in bid table  - select courseID and sections bidded on
-        $sql = "SELECT DISTINCT COURSEID, SECTION FROM BID";
-
-        $stmt = $conn->prepare($sql);
-        $stmt->setFetchMode(PDO::FETCH_ASSOC);
-        $stmt->execute();
-
-        while ($row =$stmt->fetch()){
-            $scBids[] = [$row['COURSEID'],$row['SECTION']];
-        }
-        //handle each unique courseID and section +  Order by Desc
-        foreach ($scBids as $item) {
-            $sql = "SELECT * FROM BID WHERE COURSEID = :COURSEID AND SECTION = :SECTION ORDER BY AMOUNT DESC";
-            $stmt = $conn->prepare($sql);
-            $stmt->bindParam(':COURSEID', $item[0], PDO::PARAM_STR);
-            $stmt->bindParam(':SECTION', $item[1], PDO::PARAM_STR);
-            $stmt->execute();
-
-            while ($row =$stmt->fetch()){
-                $sectionBids[] = new Bid ($row['userid'],$row['amount'],$row['courseid'],$row['section']);
-            }
-
-            $bidDAO = new BidDAO();
-            $size = $bidDAO->processBID($sectionBids, $item[0], $item[1], 1); 
-
-            $sql = "UPDATE section set size = :size where section = :section and courseid = :courseid";
-    
-
-            $stmt = $conn->prepare($sql);
-  
-            $stmt->bindParam(':size', $size, PDO::PARAM_INT);
-            $stmt->bindParam(':section', $item[1], PDO::PARAM_STR);
-            $stmt->bindParam(':courseid', $item[0], PDO::PARAM_STR);
-    
-            $stmt->execute();
-            
-            $sectionBids = []; 
-        }
-    }
 
     public function activateRoundTwo() {
         $sql = "UPDATE `round` SET `roundid`='2', `statusid`='1' WHERE `rowid`='1'";
